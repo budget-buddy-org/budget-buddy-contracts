@@ -1,9 +1,9 @@
-# openapi-generator config for swift5
+# openapi-generator config for swift6
 # Consumers: iOS app via Swift Package Manager
 # Sources are generated into Sources/BudgetBuddyContracts/ and committed to git
-# iOS devs add this repo as a Swift Package dependency
+# iOS devs add this repo as a Swift Package dependency (Package.swift is at repo root)
 projectName: BudgetBuddyContracts
 # urlsession: pure URLSession, no external dependencies
 library: urlsession
-# async/await API (requires iOS 15+ / Swift 5.5+)
+# async/await API (requires iOS 15+)
 responseAs: AsyncAwait
