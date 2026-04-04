@@ -46,7 +46,10 @@ jobs:
 
       - name: Extract version from tag
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${VERSION#.}"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Generate TypeScript client
         run: |
@@ -56,6 +59,10 @@ jobs:
             -o generated/typescript \
             -c config/typescript-axios.yaml \
             --additional-properties=npmVersion=${{ steps.version.outputs.VERSION }}
+          # Patch deprecated moduleResolution emitted by generator (node = node10, removed in TS 7)
+          sed -i 's/"moduleResolution": "node"/"moduleResolution": "node16"/g' \
+            generated/typescript/tsconfig.json \
+            generated/typescript/tsconfig.esm.json 2>/dev/null || true
 
       - name: Publish to GitHub Packages
         working-directory: generated/typescript
@@ -87,7 +94,10 @@ jobs:
 
       - name: Extract version from tag
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${VERSION#.}"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Generate Java Spring stubs
         run: |
