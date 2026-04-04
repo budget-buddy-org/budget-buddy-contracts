@@ -8,8 +8,8 @@
 groupId: com.budgetbuddy
 artifactId: budget-buddy-contracts
 artifactVersion: "1.0.0"
-apiPackage: com.budget.buddy.budget_buddy_api.generated.api
-modelPackage: com.budget.buddy.budget_buddy_api.generated.model
+apiPackage: com.budget.buddy.budget_buddy_contracts.generated.api
+modelPackage: com.budget.buddy.budget_buddy_contracts.generated.model
 interfaceOnly: true
 useTags: true
 useSpringBoot4: true
