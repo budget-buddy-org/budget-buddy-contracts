@@ -7,7 +7,7 @@
 # here we need the generated pom.xml so CI can run `mvn deploy`.
 groupId: com.budgetbuddy
 artifactId: budget-buddy-contracts
-artifactVersion: "1.0.0"
+artifactVersion: "1.0.1"
 apiPackage: com.budget.buddy.budget_buddy_contracts.generated.api
 modelPackage: com.budget.buddy.budget_buddy_contracts.generated.model
 interfaceOnly: true
