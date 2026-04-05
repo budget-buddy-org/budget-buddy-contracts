@@ -28,12 +28,31 @@ npm run generate:swift    # → Sources/BudgetBuddyContracts/  (commit this)
 npm run generate          # All three
 ```
 
+## Versioning strategy
+
+Single unified version across all three artifacts. The git tag is the source of truth; `package.json` version and `specs/openapi.yaml` `info.version` are the in-repo canonical copies and must always match.
+
+Config files (`config/*.yaml`) do **not** contain version fields — CI injects the version from the git tag at publish time; local generation scripts inject it from `package.json`.
+
+### When to bump
+
+| What changed | Affects generated output? | Action |
+|---|---|---|
+| `specs/openapi.yaml` | Yes (always) | Bump (PATCH/MINOR/MAJOR per semver rules below) |
+| `config/*.yaml` | Sometimes | PATCH bump if generated output changes; skip otherwise |
+| CI/tooling (workflows, scripts, Spectral rules) | No | No bump — just commit |
+
+Semver:
+- **MAJOR** — breaking change (removed endpoint, changed required field, renamed operationId)
+- **MINOR** — additive change (new endpoint, new optional field)
+- **PATCH** — non-breaking (generator config tweak, doc/comment update)
+
 ## Release workflow
 
-1. Edit `specs/openapi.yaml`
+1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
 2. `npm run lint && npm run validate`
 3. `npm run generate:swift` → commit `Sources/BudgetBuddyContracts/`
-4. Bump `version` in `package.json` and add entry to `CHANGELOG.md`
+4. Bump `version` in `package.json` **and** `info.version` in `specs/openapi.yaml` to match; add entry to `CHANGELOG.md`
 5. `git tag v<version> && git push --follow-tags`
 6. CI generates TypeScript and Java, then publishes both to GitHub Packages
 

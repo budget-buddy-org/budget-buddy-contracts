@@ -2,7 +2,8 @@
 # Consumers: web clients (React, etc.)
 # Published to GitHub Packages as @glebremniov/budget-buddy-contracts
 npmName: "@glebremniov/budget-buddy-contracts"
-npmVersion: "1.0.0"
+# npmVersion is intentionally absent — CI injects it from the git tag;
+# local generation (npm run generate:ts) injects it from package.json version.
 supportsES6: true
 withSeparateModelsAndApi: true
 apiPackage: api
