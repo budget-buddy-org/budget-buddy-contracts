@@ -58,7 +58,7 @@ npm install
 Add this repository as a dependency in your `Package.swift`:
 ```swift
 dependencies: [
-    .package(url: "https://github.com/glebremniov/budget-buddy-contracts.git", from: "1.0.0")
+    .package(url: "https://github.com/glebremniov/budget-buddy-contracts.git", from: "1.0.1")
 ]
 ```
 
@@ -74,7 +74,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>com.budgetbuddy</groupId>
     <artifactId>budget-buddy-contracts</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
