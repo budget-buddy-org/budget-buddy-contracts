@@ -3,6 +3,17 @@
   "version": "1.0.1",
   "description": "API-first contracts for Budget Buddy — OpenAPI spec + generated clients",
   "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./generated/typescript/index.ts",
+    "./models": "./generated/typescript/model/index.ts"
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["./generated/typescript/index.ts"],
+      "models": ["./generated/typescript/model/index.ts"]
+    }
+  },
   "scripts": {
     "validate": "openapi-generator-cli validate -i specs/openapi.yaml",
     "lint": "spectral lint specs/openapi.yaml --ruleset .spectral.yaml",
