@@ -131,22 +131,7 @@ jobs:
           </settings>
           EOF
 
-      - name: Check if Java package already published
-        id: java-check
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://maven.pkg.github.com/glebremniov/budget-buddy-contracts/com/budgetbuddy/budget-buddy-contracts/${{ steps.version.outputs.VERSION }}/budget-buddy-contracts-${{ steps.version.outputs.VERSION }}.pom")
-          echo "HTTP status: $STATUS"
-          if [ "$STATUS" = "200" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "Version ${{ steps.version.outputs.VERSION }} already published — skipping."
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Publish to GitHub Packages
-        if: steps.java-check.outputs.skip != 'true'
         working-directory: generated/java
         run: |
           mvn deploy \
