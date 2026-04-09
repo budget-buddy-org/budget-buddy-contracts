@@ -7,13 +7,13 @@
 
 import Foundation
 
-/** Patch request — only provided fields will be updated */
+/** Patch request — only provided fields are updated. At least one field must be provided. */
 public struct CategoryUpdate: Sendable, Codable, Hashable {
 
     public static let nameRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
-    public var name: String
+    public var name: String?
 
-    public init(name: String) {
+    public init(name: String? = nil) {
         self.name = name
     }
 
@@ -25,7 +25,7 @@ public struct CategoryUpdate: Sendable, Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(name, forKey: .name)
     }
 }
 

@@ -23,6 +23,7 @@ open class TransactionsAPI {
     /**
      Create transaction
      - POST /v1/transactions
+     - Records a new transaction and returns the created resource.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -63,6 +64,7 @@ open class TransactionsAPI {
     /**
      Delete transaction
      - DELETE /v1/transactions/{transactionId}
+     - Permanently deletes a transaction by its UUID.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -105,6 +107,7 @@ open class TransactionsAPI {
     /**
      Get transaction
      - GET /v1/transactions/{transactionId}
+     - Returns a single transaction by its UUID.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -160,6 +163,7 @@ open class TransactionsAPI {
     /**
      List transactions
      - GET /v1/transactions
+     - Returns a paginated, filterable list of transactions for the authenticated user.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -213,6 +217,7 @@ open class TransactionsAPI {
     /**
      Replace transaction
      - PUT /v1/transactions/{transactionId}
+     - Fully replaces a transaction's data (PUT semantics).
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -257,6 +262,7 @@ open class TransactionsAPI {
     /**
      Partially update transaction
      - PATCH /v1/transactions/{transactionId}
+     - Partially updates a transaction; only provided fields are modified. Empty patch objects are invalid and return 400.
      - Bearer Token:
        - type: http
        - name: BearerAuth

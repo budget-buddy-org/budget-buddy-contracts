@@ -7,7 +7,7 @@
 
 import Foundation
 
-/** Patch request — only provided fields will be updated */
+/** Patch request — only provided fields are updated. At least one field must be provided. */
 public struct TransactionUpdate: Sendable, Codable, Hashable {
 
     public enum ModelType: String, Sendable, Codable, CaseIterable {

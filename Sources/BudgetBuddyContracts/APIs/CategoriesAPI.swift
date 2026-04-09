@@ -23,6 +23,7 @@ open class CategoriesAPI {
     /**
      Create category
      - POST /v1/categories
+     - Creates a new category and returns the created resource with its assigned ID.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -63,6 +64,7 @@ open class CategoriesAPI {
     /**
      Delete category
      - DELETE /v1/categories/{categoryId}
+     - Permanently deletes a category by its UUID.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -105,6 +107,7 @@ open class CategoriesAPI {
     /**
      Get category
      - GET /v1/categories/{categoryId}
+     - Returns a single category by its UUID.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -148,6 +151,7 @@ open class CategoriesAPI {
     /**
      List categories
      - GET /v1/categories
+     - Returns a paginated list of categories for the authenticated user.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -193,6 +197,7 @@ open class CategoriesAPI {
     /**
      Replace category
      - PUT /v1/categories/{categoryId}
+     - Fully replaces a category's data (PUT semantics).
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -237,6 +242,7 @@ open class CategoriesAPI {
     /**
      Partially update category
      - PATCH /v1/categories/{categoryId}
+     - Partially updates a category; only provided fields are modified. Empty patch objects are invalid and return 400.
      - Bearer Token:
        - type: http
        - name: BearerAuth

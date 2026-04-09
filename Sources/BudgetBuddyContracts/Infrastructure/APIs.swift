@@ -25,7 +25,7 @@ open class BudgetBuddyContractsAPIConfiguration: @unchecked Sendable {
     public var interceptor: OpenAPIInterceptor
 
     public init(
-        basePath: String = "https://api.example.com",
+        basePath: String = "http://localhost:8080",
         customHeaders: [String: String] = [:],
         credential: URLCredential? = nil,
         requestBuilderFactory: RequestBuilderFactory = URLSessionRequestBuilderFactory(),

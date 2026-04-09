@@ -7,7 +7,7 @@
 
 import Foundation
 
-/** RFC 7807 Problem+JSON */
+/** RFC 9457 Problem Details */
 public struct Problem: Sendable, Codable, Hashable {
 
     public var type: String? = "about:blank"

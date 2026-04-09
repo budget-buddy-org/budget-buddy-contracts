@@ -26,7 +26,7 @@ The core of this project is the OpenAPI specification located in `specs/openapi.
 - **Type Safety:** Eliminate runtime errors caused by mismatched API schemas.
 - **Parallel Development:** Frontend, Backend, and Mobile teams can work simultaneously against a shared interface.
 - **Documentation:** The spec *is* the documentation.
-- **Consistency:** Standardized error handling (RFC 7807) across all platforms.
+- **Consistency:** Standardized error handling (RFC 9457) across all platforms.
 
 ---
 
@@ -58,7 +58,7 @@ npm install
 Add this repository as a dependency in your `Package.swift`:
 ```swift
 dependencies: [
-    .package(url: "https://github.com/glebremniov/budget-buddy-contracts.git", from: "1.0.1")
+    .package(url: "https://github.com/glebremniov/budget-buddy-contracts.git", from: "1.1.0")
 ]
 ```
 
@@ -74,7 +74,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>com.budgetbuddy</groupId>
     <artifactId>budget-buddy-contracts</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -97,6 +97,6 @@ Add to your `pom.xml`:
 ## 📝 API Design Conventions
 
 - **Currency:** All monetary amounts are handled as `integers` in minor units (e.g., `$10.50` is represented as `1050`).
-- **Errors:** We follow **RFC 7807** (Problem Details for HTTP APIs). Every error response uses the `application/problem+json` content type.
+- **Errors:** We follow **RFC 9457** (Problem Details for HTTP APIs). Every error response uses the `application/problem+json` content type.
 - **Pagination:** Collections use a standardized `PaginationMeta` object containing `total`, `limit`, and `offset`.
 - **Auth:** Bearer Token (JWT) is used globally except for login/register endpoints.

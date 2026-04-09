@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-04-09
+
+### Changed
+- aligned Problem Details references with RFC 9457
+- replaced the placeholder production server URL with a templated server that defaults generated clients to `http://localhost:8080`
+- clarified create-response `Location` headers across category and transaction endpoints
+- made `CategoryUpdate` a true PATCH schema with optional fields and a non-empty object requirement
+- required non-empty PATCH documents for `TransactionUpdate` as well
+
 ## [1.0.1] - 2026-04-05
 
 ### Added
@@ -18,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - OpenAPI 3.1.0 spec with auth, categories, and transactions endpoints
 - JWT Bearer security scheme (global, except auth endpoints)
-- RFC 7807 Problem+JSON error responses
+- RFC 9457 Problem Details error responses
 - Separate Write/Update schemas for clean POST/PUT/PATCH semantics
 - Pagination with limit/offset on list endpoints
 - TypeScript axios client generation config (GitHub Packages)
