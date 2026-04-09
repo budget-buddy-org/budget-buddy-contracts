@@ -10,9 +10,9 @@ API-first contracts for Budget Buddy. The OpenAPI spec in `specs/openapi.yaml` i
 |--------|-----------|--------|-------------|
 | TypeScript | `typescript-axios` | `generated/typescript/` | GitHub Packages (npm) |
 | Java Spring Boot | `spring` (interfaceOnly) | `generated/java/` | GitHub Packages (Maven) |
-| iOS/Swift | `swift5` (urlsession) | `Sources/BudgetBuddyContracts/` | Git repo (SPM) |
+| iOS/Swift | `swift6` | `Sources/BudgetBuddyContracts/` | Git repo (SPM) |
 
-`generated/` is gitignored — TypeScript and Java are ephemeral CI artifacts. `Sources/BudgetBuddyContracts/` is committed because Swift Package Manager requires sources tracked in git.
+`generated/` is gitignored — TypeScript and Java are ephemeral CI/local artifacts. `Sources/BudgetBuddyContracts/` is committed because Swift Package Manager requires sources tracked in git.
 
 ## Commands
 
@@ -69,7 +69,8 @@ Semver:
 ## Spec conventions
 
 - All operations have an `operationId` (required by Spectral, used for generated method names)
-- Error responses use `application/problem+json` with the `Problem` schema (RFC 7807)
+- Error responses use `application/problem+json` with the `Problem` schema (RFC 9457)
 - Amounts are `integer` in minor currency units (e.g. `1299` = €12.99)
 - Write schemas (POST/PUT body) and Update schemas (PATCH body) are separate from read schemas
+- PATCH schemas represent partial updates: fields are optional, and empty patch objects are invalid
 - Auth endpoints override global security with `security: []`

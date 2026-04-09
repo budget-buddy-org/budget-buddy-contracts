@@ -23,6 +23,7 @@ open class AuthAPI {
     /**
      Authenticate user
      - POST /v1/auth/login
+     - Authenticates a user with username and password, returning access and refresh tokens.
      - parameter loginRequest: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<AuthToken> 
@@ -58,6 +59,7 @@ open class AuthAPI {
     /**
      Logout user and invalidate refresh tokens
      - POST /v1/auth/logout
+     - Invalidates the current user's refresh tokens, ending their session.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -96,6 +98,7 @@ open class AuthAPI {
     /**
      Refresh access token
      - POST /v1/auth/refresh
+     - Exchanges a valid refresh token for a new access token.
      - parameter refreshTokenRequest: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<AuthToken> 
@@ -132,6 +135,7 @@ open class AuthAPI {
     /**
      Register new user
      - POST /v1/auth/register
+     - Creates a new user account with the provided credentials.
      - parameter registerRequest: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Void> 
