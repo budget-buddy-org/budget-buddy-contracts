@@ -23,7 +23,7 @@
     "generate": "npm run generate:ts && npm run generate:java && npm run generate:swift"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.31.0",
+    "@openapitools/openapi-generator-cli": "^2.31.1",
     "@stoplight/spectral-cli": "^6.15.0"
   }
 }
