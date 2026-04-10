@@ -96,3 +96,5 @@ jobs:
           -DaltDeploymentRepository=github::https://maven.pkg.github.com/budget-buddy-org/budget-buddy-contracts
           --no-transfer-progress
           -DskipTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
