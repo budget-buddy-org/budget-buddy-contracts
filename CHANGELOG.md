@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - updated Node.js engine requirement to v24+ (LTS)
 - updated Java publish workflow to use Java 25 (LTS)
 - updated all GitHub Actions to their latest versions (checkout@v6, setup-node@v6, setup-java@v5)
+- introduced semantic-release for fully automated versioning and publishing on push to `main`
+
+### Fixed
+- `specs/openapi.yaml` was never version-bumped in release commits because `semantic-release-openapi` ran after `@semantic-release/git`; reordered plugins so the openapi spec is updated before the commit
+- TypeScript and Java clients were never generated or published after a release because all four conditional steps referenced the non-existent step ID `after` instead of `detect`
+- Swift sources (`Sources/BudgetBuddyContracts/`) are now regenerated during the semantic-release prepare phase via `@semantic-release/exec`, ensuring the tagged commit always contains up-to-date generated sources (required for SPM resolution)
 
 ## [1.1.0] - 2026-04-09
 

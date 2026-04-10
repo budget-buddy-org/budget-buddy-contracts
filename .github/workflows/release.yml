@@ -37,10 +37,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Capture current version
-        id: before
-        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
-
       - name: Lint spec
         run: pnpm run lint
 
@@ -63,7 +59,7 @@ jobs:
           fi
 
       - name: Generate TypeScript client
-        if: steps.after.outputs.released == 'true'
+        if: steps.detect.outputs.released == 'true'
         run: |
           pnpm run generate:ts
           jq '.compilerOptions.moduleResolution = "node10" | .compilerOptions.ignoreDeprecations = "6.0"' \
@@ -74,18 +70,18 @@ jobs:
           mv /tmp/tsconfig.esm.json generated/typescript/tsconfig.esm.json
 
       - name: Publish TypeScript package
-        if: steps.after.outputs.released == 'true'
+        if: steps.detect.outputs.released == 'true'
         working-directory: generated/typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm publish --no-git-checks
 
       - name: Generate Java Spring stubs
-        if: steps.after.outputs.released == 'true'
+        if: steps.detect.outputs.released == 'true'
         run: pnpm run generate:java
 
       - name: Configure Maven for GitHub Packages
-        if: steps.after.outputs.released == 'true'
+        if: steps.detect.outputs.released == 'true'
         run: |
           mkdir -p ~/.m2
           cat > ~/.m2/settings.xml <<EOF
@@ -101,7 +97,7 @@ jobs:
           EOF
 
       - name: Publish Java package
-        if: steps.after.outputs.released == 'true'
+        if: steps.detect.outputs.released == 'true'
         working-directory: generated/java
         run: |
           mvn deploy \

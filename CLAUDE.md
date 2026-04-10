@@ -50,12 +50,20 @@ Semver:
 
 ## Release workflow
 
+Releases are fully automated via semantic-release on push to `main`.
+
 1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
 2. `pnpm run lint && pnpm run validate`
-3. `pnpm run generate:swift` → commit `Sources/BudgetBuddyContracts/`
-4. Bump `version` in `package.json` **and** `info.version` in `specs/openapi.yaml` to match; add entry to `CHANGELOG.md`
-5. `git tag v<version> && git push --follow-tags`
-6. CI generates TypeScript and Java, then publishes both to GitHub Packages
+3. Commit with a conventional commit message (`feat:`, `fix:`, `feat!:`, etc.) and merge to `main`
+4. CI does the rest:
+   - determines next version from commit history
+   - bumps `package.json` and `specs/openapi.yaml`
+   - regenerates Swift sources and includes them in the tagged commit
+   - updates `CHANGELOG.md`
+   - creates the git tag and GitHub Release
+   - generates and publishes TypeScript (npm) and Java (Maven) to GitHub Packages
+
+Do **not** manually bump versions, tag, or run `generate:swift` before merging — semantic-release owns all of that.
 
 ## Architecture
 
@@ -65,7 +73,8 @@ Semver:
 - `Package.swift` — makes this repo a valid Swift Package; points to `Sources/BudgetBuddyContracts/`
 - `.spectral.yaml` — enforces `operationId` on every operation (error) and tags (warn); generators rely on both
 - `.github/workflows/validate.yml` — runs lint + validate on PRs that touch `specs/` or `config/`
-- `.github/workflows/release.yml` — on `v*` tag: generates and publishes TypeScript (npm) + Java (Maven) to GitHub Packages using `GITHUB_TOKEN`
+- `.github/workflows/release.yml` — on push to `main`: runs semantic-release, then generates and publishes TypeScript (npm) + Java (Maven) to GitHub Packages using `GITHUB_TOKEN`
+- `.releaserc.cjs` — semantic-release plugin config; plugin order matters (openapi → exec/swift → git commit)
 
 ## Spec conventions
 

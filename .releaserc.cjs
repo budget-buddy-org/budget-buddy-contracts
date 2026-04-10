@@ -11,18 +11,29 @@ module.exports = {
       },
     ],
     [
-      "@semantic-release/git",
+      "semantic-release-openapi",
       {
-        assets: ["package.json", "package-lock.json", "specs/openapi.yaml", "CHANGELOG.md"],
-        message:
-          "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+        apiSpecFiles: ["specs/openapi.yaml"],
       },
     ],
     [
-      "semantic-release-openapi",
+      "@semantic-release/exec",
       {
-        "apiSpecFiles": ["specs/openapi.yaml"]
-      }
+        prepareCmd: "pnpm run generate:swift",
+      },
+    ],
+    [
+      "@semantic-release/git",
+      {
+        assets: [
+          "package.json",
+          "specs/openapi.yaml",
+          "CHANGELOG.md",
+          "Sources/BudgetBuddyContracts/",
+        ],
+        message:
+          "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+      },
     ],
     "@semantic-release/github",
   ],

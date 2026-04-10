@@ -85,11 +85,14 @@ Add to your `pom.xml`:
 ## 🚦 Release Workflow
 
 1. **Modify the Spec:** Edit `specs/openapi.yaml`.
-2. **Sync Swift:** Run `pnpm run generate:swift` and commit the changes in `Sources/`.
-3. **Use Conventional Commits:** Merge changes to `main` with commit messages such as `feat(spec): add category color` or `fix(auth): clarify refresh token schema`.
-4. **Automatic Release:** The `Release` GitHub Action runs on pushes to `main`, calculates the next semantic version, updates `CHANGELOG.md`, creates the Git tag and GitHub Release, then publishes:
-   - the generated TypeScript client to GitHub Packages
-   - the generated Java Spring stubs to GitHub Packages
+2. **Use Conventional Commits:** Merge changes to `main` with commit messages such as `feat(spec): add category color` or `fix(auth): clarify refresh token schema`.
+3. **Automatic Release:** The `Release` GitHub Action runs on every push to `main`, calculates the next semantic version from commit history, then automatically:
+   - bumps `package.json` and `specs/openapi.yaml` to the new version
+   - regenerates and commits the Swift sources in `Sources/BudgetBuddyContracts/`
+   - updates `CHANGELOG.md`
+   - creates the Git tag and GitHub Release
+   - publishes the generated TypeScript client to GitHub Packages
+   - publishes the generated Java Spring stubs to GitHub Packages
 
 ### Commit Message Enforcement
 
