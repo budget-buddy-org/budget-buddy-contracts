@@ -64,7 +64,6 @@ Releases are fully automated via semantic-release on push to `main`.
 
 Do **not** manually bump versions, tag, or run `generate:swift` before merging — semantic-release owns all of that.
 
-> Note: `CHANGELOG.md` and `specs/openapi.yaml` are **not** automatically committed back to `main` (branch protection requires signed commits and PRs). Update `CHANGELOG.md` manually in the same PR as spec changes, and bump `specs/openapi.yaml` `info.version` to match `package.json` before merging.
 
 ## Architecture
 
