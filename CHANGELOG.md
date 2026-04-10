@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v1.3.0...v1.3.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* harden CI workflows and add generation smoke tests ([#39](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/39)) ([02436ca](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/02436ca3d2ca816d2f5b08f35f21cfd9bc7c4704))
+* remove maven cache from setup-java ([#40](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/40)) ([acfec05](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/acfec054133ab3762d3171613dc7aba3c38f07d9))
+
 # [1.3.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v1.2.2...v1.3.0) (2026-04-10)
 
 
