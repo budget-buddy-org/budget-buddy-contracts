@@ -17,15 +17,15 @@ API-first contracts for Budget Buddy. The OpenAPI spec in `specs/openapi.yaml` i
 ## Commands
 
 ```bash
-npm install               # Install openapi-generator-cli and spectral
+pnpm install               # Install openapi-generator-cli and spectral
 
-npm run lint              # Lint spec with Spectral (must pass before PRs)
-npm run validate          # Structural validation via openapi-generator
+pnpm run lint              # Lint spec with Spectral (must pass before PRs)
+pnpm run validate          # Structural validation via openapi-generator
 
-npm run generate:ts       # → generated/typescript/
-npm run generate:java     # → generated/java/
-npm run generate:swift    # → Sources/BudgetBuddyContracts/  (commit this)
-npm run generate          # All three
+pnpm run generate:ts       # → generated/typescript/
+pnpm run generate:java     # → generated/java/
+pnpm run generate:swift    # → Sources/BudgetBuddyContracts/  (commit this)
+pnpm run generate          # All three
 ```
 
 ## Versioning strategy
@@ -50,8 +50,8 @@ Semver:
 ## Release workflow
 
 1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
-2. `npm run lint && npm run validate`
-3. `npm run generate:swift` → commit `Sources/BudgetBuddyContracts/`
+2. `pnpm run lint && pnpm run validate`
+3. `pnpm run generate:swift` → commit `Sources/BudgetBuddyContracts/`
 4. Bump `version` in `package.json` **and** `info.version` in `specs/openapi.yaml` to match; add entry to `CHANGELOG.md`
 5. `git tag v<version> && git push --follow-tags`
 6. CI generates TypeScript and Java, then publishes both to GitHub Packages
@@ -64,7 +64,7 @@ Semver:
 - `Package.swift` — makes this repo a valid Swift Package; points to `Sources/BudgetBuddyContracts/`
 - `.spectral.yaml` — enforces `operationId` on every operation (error) and tags (warn); generators rely on both
 - `.github/workflows/validate.yml` — runs lint + validate on PRs that touch `specs/` or `config/`
-- `.github/workflows/publish.yml` — on `v*` tag: generates and publishes TypeScript (npm) + Java (Maven) to GitHub Packages using `GITHUB_TOKEN`
+- `.github/workflows/release.yml` — on `v*` tag: generates and publishes TypeScript (npm) + Java (Maven) to GitHub Packages using `GITHUB_TOKEN`
 
 ## Spec conventions
 

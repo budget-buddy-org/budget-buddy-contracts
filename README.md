@@ -33,22 +33,23 @@ The core of this project is the OpenAPI specification located in `specs/openapi.
 ## 🛠 Developer Guide
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18+)
+- [Node.js](https://nodejs.org/) (v24+)
+- [pnpm](https://pnpm.io/) (v10+)
 - [OpenAPI Generator CLI](https://openapi-generator.tech/docs/installation)
 - [Spectral CLI](https://meta.stoplight.io/docs/spectral/docs/guides/1-getting-started.md)
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Core Commands
 
 | Command | Description |
 | :--- | :--- |
-| `npm run lint` | Lints the spec with Spectral (enforces `operationId` and naming conventions). |
-| `npm run validate` | Checks the structural integrity of the OpenAPI document. |
-| `npm run generate` | Generates all clients (TS, Java, Swift) locally. |
-| `npm run generate:swift` | Specifically updates the committed Swift source files. |
+| `pnpm run lint` | Lints the spec with Spectral (enforces `operationId` and naming conventions). |
+| `pnpm run validate` | Checks the structural integrity of the OpenAPI document. |
+| `pnpm run generate` | Generates all clients (TS, Java, Swift) locally. |
+| `pnpm run generate:swift` | Specifically updates the committed Swift source files. |
 
 ---
 
@@ -65,7 +66,7 @@ dependencies: [
 ### TypeScript (Web)
 Install from GitHub Packages (requires `.npmrc` configuration):
 ```bash
-npm install @glebremniov/budget-buddy-contracts
+pnpm add @glebremniov/budget-buddy-contracts
 ```
 
 ### Java (Spring Boot)
@@ -83,7 +84,7 @@ Add to your `pom.xml`:
 ## 🚦 Release Workflow
 
 1. **Modify the Spec:** Edit `specs/openapi.yaml`.
-2. **Sync Swift:** Run `npm run generate:swift` and commit the changes in `Sources/`.
+2. **Sync Swift:** Run `pnpm run generate:swift` and commit the changes in `Sources/`.
 3. **Use Conventional Commits:** Merge changes to `main` with commit messages such as `feat(spec): add category color` or `fix(auth): clarify refresh token schema`.
 4. **Automatic Release:** The `Release` GitHub Action runs on pushes to `main`, calculates the next semantic version, updates `CHANGELOG.md`, creates the Git tag and GitHub Release, then publishes:
    - the generated TypeScript client to GitHub Packages

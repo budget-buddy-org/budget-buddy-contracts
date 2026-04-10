@@ -26,9 +26,13 @@
     "generate:ts": "openapi-generator-cli generate -i specs/openapi.yaml -g typescript-axios -o generated/typescript -c config/typescript-axios.yaml --additional-properties=npmVersion=$(node -p \"require('./package.json').version\")",
     "generate:java": "openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml --additional-properties=artifactVersion=$(node -p \"require('./package.json').version\")",
     "generate:swift": "openapi-generator-cli generate -i specs/openapi.yaml -g swift6 -o /tmp/budget-buddy-swift -c config/swift6.yaml && rsync -a --delete /tmp/budget-buddy-swift/Sources/BudgetBuddyContracts/ Sources/BudgetBuddyContracts/",
-    "generate": "npm run generate:ts && npm run generate:java && npm run generate:swift",
+    "generate": "pnpm run generate:ts && pnpm run generate:java && pnpm run generate:swift",
     "release": "semantic-release",
     "release:dry-run": "semantic-release --dry-run"
+  },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",

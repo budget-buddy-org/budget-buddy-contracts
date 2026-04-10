@@ -16,15 +16,19 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - uses: actions/setup-node@v6
         with:
-          node-version: "22"
-          cache: "npm"
+          node-version: "24"
+          cache: "pnpm"
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: Lint spec
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Validate spec
-        run: npm run validate
+        run: pnpm run validate

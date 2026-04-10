@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- migrated package management from `npm` to `pnpm`
+- updated Node.js engine requirement to v24+ (LTS)
+- updated Java publish workflow to use Java 25 (LTS)
+- updated all GitHub Actions to their latest versions (checkout@v6, setup-node@v6, setup-java@v5)
+
 ## [1.1.0] - 2026-04-09
 
 ### Changed
