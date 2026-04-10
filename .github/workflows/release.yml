@@ -79,7 +79,7 @@ jobs:
       - name: Install TypeScript package dependencies
         if: steps.detect.outputs.released == 'true'
         working-directory: generated/typescript
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile  # generated package.json has no lockfile
 
       - name: Publish TypeScript package
         if: steps.detect.outputs.released == 'true'
