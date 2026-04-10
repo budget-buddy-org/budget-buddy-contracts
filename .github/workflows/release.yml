@@ -34,7 +34,7 @@ jobs:
         with:
           node-version: "24"
           registry-url: "https://npm.pkg.github.com"
-          scope: "@glebremniov"
+          scope: "@budget-buddy-org"
           cache: "pnpm"
 
       - uses: actions/setup-java@v5
@@ -76,6 +76,11 @@ jobs:
             generated/typescript/tsconfig.esm.json > /tmp/tsconfig.esm.json
           mv /tmp/tsconfig.esm.json generated/typescript/tsconfig.esm.json
 
+      - name: Install TypeScript package dependencies
+        if: steps.detect.outputs.released == 'true'
+        working-directory: generated/typescript
+        run: pnpm install --no-frozen-lockfile
+
       - name: Publish TypeScript package
         if: steps.detect.outputs.released == 'true'
         working-directory: generated/typescript
@@ -108,6 +113,6 @@ jobs:
         working-directory: generated/java
         run: |
           mvn deploy \
-            -DaltDeploymentRepository="github::https://maven.pkg.github.com/glebremniov/budget-buddy-contracts" \
+            -DaltDeploymentRepository="github::https://maven.pkg.github.com/budget-buddy-org/budget-buddy-contracts" \
             --no-transfer-progress \
             -DskipTests
