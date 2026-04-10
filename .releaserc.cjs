@@ -20,27 +20,6 @@ module.exports = {
           "sed -i 's/^  version: .*/  version: \"${nextRelease.version}\"/' specs/openapi.yaml && pnpm run generate:swift",
       },
     ],
-    // Publishes TypeScript package to GitHub Packages (npm)
-    [
-      "@semantic-release/exec",
-      {
-        publishCmd: [
-          "pnpm run generate:ts",
-          "jq --arg v '${nextRelease.version}' '.version = $v' config/typescript-package.json > generated/typescript/package.json",
-          "pnpm publish generated/typescript --no-git-checks",
-        ].join(" && "),
-      },
-    ],
-    // Publishes Java package to GitHub Packages (Maven)
-    [
-      "@semantic-release/exec",
-      {
-        publishCmd: [
-          "pnpm run generate:java",
-          "mvn deploy --file generated/java/pom.xml -s config/maven-settings.xml -DaltDeploymentRepository=github::https://maven.pkg.github.com/budget-buddy-org/budget-buddy-contracts --no-transfer-progress -DskipTests",
-        ].join(" && "),
-      },
-    ],
     // Commits all prepare-phase changes (CHANGELOG, package.json, spec, Swift sources)
     [
       "@semantic-release/git",
@@ -55,7 +34,7 @@ module.exports = {
           "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
       },
     ],
-    // Creates GitHub Release with notes
+    // Creates GitHub Release — triggers the Publish workflow
     "@semantic-release/github",
   ],
 };

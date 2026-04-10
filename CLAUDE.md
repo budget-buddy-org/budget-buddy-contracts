@@ -57,10 +57,10 @@ Releases are fully automated via semantic-release on push to `main`.
 3. Open a PR with a conventional commit title (`feat:`, `fix:`, `feat!:`, etc.) — the PR title becomes the merge commit because PRs are squash-merged
 4. CI does the rest:
    - determines next version from commit history
-   - bumps `package.json` on disk (used by generation scripts)
-   - regenerates Swift sources
+   - bumps `package.json` and `specs/openapi.yaml` version on disk
+   - regenerates Swift sources and commits them
    - creates the git tag and GitHub Release
-   - generates and publishes TypeScript (npm) and Java (Maven) to GitHub Packages
+   - the GitHub Release triggers the Publish workflow, which generates and publishes TypeScript (npm) and Java (Maven) to GitHub Packages in parallel
 
 Do **not** manually bump versions, tag, or run `generate:swift` before merging — semantic-release owns all of that.
 
@@ -79,8 +79,9 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - `.spectral.yaml` — enforces `operationId` on every operation (error) and tags (warn); generators rely on both
 - `.github/workflows/commitlint.yml` — runs on every PR: validates individual commit messages and the PR title against conventional commit rules (PR title is what lands on `main` via squash merge)
 - `.github/workflows/validate.yml` — runs on PRs touching `specs/`, `config/`, `.spectral.yaml`, `openapi-ts.config.ts`, or `openapitools.json`: lints the spec, validates its structure, and smoke-tests TypeScript and Java generation
-- `.github/workflows/release.yml` — on push to `main`: generates a GitHub App token (`RELEASE_BOT_ID` + `RELEASE_BOT_PRIVATE_KEY` org secrets) to bypass the branch ruleset PR requirement, then runs semantic-release and publishes TypeScript (npm) + Java (Maven) to GitHub Packages; has a 20-minute timeout
-- `.releaserc.cjs` — semantic-release plugin config; plugin order matters: changelog → npm (version bump) → exec/swift prepare → exec/typescript publish → exec/java publish → git commit → github release
+- `.github/workflows/release.yml` — on push to `main`: generates a GitHub App token (`RELEASE_BOT_ID` + `RELEASE_BOT_PRIVATE_KEY` org secrets) to bypass the branch ruleset PR requirement, then runs semantic-release; has a 20-minute timeout
+- `.github/workflows/publish.yml` — triggered by `release: published`: generates and publishes TypeScript (npm) and Java (Maven) to GitHub Packages in two parallel jobs; also supports `workflow_dispatch` for manual retries; uses the workflow token (`GITHUB_TOKEN`) which has `packages: write`
+- `.releaserc.cjs` — semantic-release plugin config; plugin order matters: changelog → npm (version bump only, no publish) → exec/swift prepare → git commit → github release (which triggers the Publish workflow)
 
 ## Spec conventions
 
