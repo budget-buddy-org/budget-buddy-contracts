@@ -69,7 +69,7 @@ jobs:
         if: steps.detect.outputs.released == 'true'
         run: |
           pnpm run generate:ts
-          jq '.compilerOptions.moduleResolution = "node10" | .compilerOptions.ignoreDeprecations = "6.0"' \
+          jq '.compilerOptions.moduleResolution = "node10"' \
             generated/typescript/tsconfig.json > /tmp/tsconfig.json
           mv /tmp/tsconfig.json generated/typescript/tsconfig.json
           jq '.compilerOptions.moduleResolution = "bundler"' \
