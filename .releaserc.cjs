@@ -27,7 +27,7 @@ module.exports = {
         publishCmd: [
           "pnpm run generate:ts",
           "jq --arg v '${nextRelease.version}' '.version = $v' config/typescript-package.json > generated/typescript/package.json",
-          "pnpm publish --directory generated/typescript --no-git-checks",
+          "pnpm publish generated/typescript --no-git-checks",
         ].join(" && "),
       },
     ],
