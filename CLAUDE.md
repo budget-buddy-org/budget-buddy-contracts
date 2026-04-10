@@ -54,7 +54,7 @@ Releases are fully automated via semantic-release on push to `main`.
 
 1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
 2. `pnpm run lint && pnpm run validate`
-3. Commit with a conventional commit message (`feat:`, `fix:`, `feat!:`, etc.) and merge to `main`
+3. Open a PR with a conventional commit title (`feat:`, `fix:`, `feat!:`, etc.) — the PR title becomes the merge commit because PRs are squash-merged
 4. CI does the rest:
    - determines next version from commit history
    - bumps `package.json` on disk (used by generation scripts)
@@ -63,6 +63,8 @@ Releases are fully automated via semantic-release on push to `main`.
    - generates and publishes TypeScript (npm) and Java (Maven) to GitHub Packages
 
 Do **not** manually bump versions, tag, or run `generate:swift` before merging — semantic-release owns all of that.
+
+> **Squash-merge convention:** always use squash merge on GitHub. The PR title is what lands on `main` and what semantic-release reads to determine the next version. Individual commit messages within the PR are validated by CI but do not affect versioning.
 
 
 ## Architecture
@@ -75,9 +77,10 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - `openapitools.json` — pins openapi-generator version (currently 7.21.0; needed for OAS 3.1 `type: [string, "null"]`)
 - `Package.swift` — makes this repo a valid Swift Package; points to `Sources/BudgetBuddyContracts/`
 - `.spectral.yaml` — enforces `operationId` on every operation (error) and tags (warn); generators rely on both
-- `.github/workflows/validate.yml` — runs lint + validate on PRs that touch `specs/` or `config/`
-- `.github/workflows/release.yml` — on push to `main`: generates a GitHub App token (`RELEASE_BOT_ID` + `RELEASE_BOT_PRIVATE_KEY` org secrets) to bypass the branch ruleset PR requirement, then runs semantic-release and publishes TypeScript (npm) + Java (Maven) to GitHub Packages
-- `.releaserc.cjs` — semantic-release plugin config; plugin order matters (changelog → npm → exec/swift → git commit → github)
+- `.github/workflows/commitlint.yml` — runs on every PR: validates individual commit messages and the PR title against conventional commit rules (PR title is what lands on `main` via squash merge)
+- `.github/workflows/validate.yml` — runs on PRs touching `specs/`, `config/`, `.spectral.yaml`, `openapi-ts.config.ts`, or `openapitools.json`: lints the spec, validates its structure, and smoke-tests TypeScript and Java generation
+- `.github/workflows/release.yml` — on push to `main`: generates a GitHub App token (`RELEASE_BOT_ID` + `RELEASE_BOT_PRIVATE_KEY` org secrets) to bypass the branch ruleset PR requirement, then runs semantic-release and publishes TypeScript (npm) + Java (Maven) to GitHub Packages; has a 20-minute timeout
+- `.releaserc.cjs` — semantic-release plugin config; plugin order matters: changelog → npm (version bump) → exec/swift prepare → exec/typescript publish → exec/java publish → git commit → github release
 
 ## Spec conventions
 
