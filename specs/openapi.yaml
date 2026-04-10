@@ -6,7 +6,7 @@ info:
   version: "1.2.0"
   contact:
     name: Budget Buddy
-    url: https://github.com/glebremniov/budget-buddy-contracts
+    url: https://github.com/budget-buddy-org/budget-buddy-contracts
 
 servers:
   - url: "{scheme}://{host}"

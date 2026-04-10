@@ -1,9 +1,9 @@
 # Budget Buddy Contracts 🚀
 
 [![OpenAPI Spec](https://img.shields.io/badge/OpenAPI-3.1.0-green.svg)](https://www.openapis.org/)
-[![GitHub Release](https://img.shields.io/github/v/release/glebremniov/budget-buddy-contracts)](https://github.com/glebremniov/budget-buddy-contracts/releases)
-[![npm (GitHub Packages)](https://img.shields.io/badge/npm-pkg.github.com-blue.svg)](https://github.com/glebremniov/budget-buddy-contracts/packages)
-[![Maven (GitHub Packages)](https://img.shields.io/badge/maven-pkg.github.com-blue.svg)](https://github.com/glebremniov/budget-buddy-contracts/packages)
+[![GitHub Release](https://img.shields.io/github/v/release/budget-buddy-org/budget-buddy-contracts)](https://github.com/budget-buddy-org/budget-buddy-contracts/releases)
+[![npm (GitHub Packages)](https://img.shields.io/badge/npm-pkg.github.com-blue.svg)](https://github.com/budget-buddy-org/budget-buddy-contracts/packages)
+[![Maven (GitHub Packages)](https://img.shields.io/badge/maven-pkg.github.com-blue.svg)](https://github.com/budget-buddy-org/budget-buddy-contracts/packages)
 [![Linting: Spectral](https://img.shields.io/badge/linting-spectral-blue.svg)](https://stoplight.io/open-source/spectral)
 [![Validation: OpenAPI Generator](https://img.shields.io/badge/validation-openapi--generator-orange.svg)](https://openapi-generator.tech/)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
@@ -60,14 +60,14 @@ pnpm install
 Add this repository as a dependency in your `Package.swift`:
 ```swift
 dependencies: [
-    .package(url: "https://github.com/glebremniov/budget-buddy-contracts.git", from: "1.1.0")
+    .package(url: "https://github.com/budget-buddy-org/budget-buddy-contracts.git", from: "1.1.0")
 ]
 ```
 
 ### TypeScript (Web)
 Install from GitHub Packages (requires `.npmrc` configuration):
 ```bash
-pnpm add @glebremniov/budget-buddy-contracts
+pnpm add @budget-buddy-org/budget-buddy-contracts
 ```
 
 ### Java (Spring Boot)

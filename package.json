@@ -1,5 +1,5 @@
 {
-  "name": "@glebremniov/budget-buddy-contracts",
+  "name": "@budget-buddy-org/budget-buddy-contracts",
   "version": "1.2.0",
   "description": "API-first contracts for Budget Buddy — OpenAPI spec + generated clients",
   "private": true,
