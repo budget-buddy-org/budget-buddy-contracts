@@ -1,0 +1,16 @@
+{
+  "name": "@budget-buddy-org/budget-buddy-contracts",
+  "version": "0.0.0",
+  "description": "TypeScript API client for Budget Buddy",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "types": "./index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/budget-buddy-org/budget-buddy-contracts.git"
+  },
+  "sideEffects": false,
+  "license": "MIT"
+}

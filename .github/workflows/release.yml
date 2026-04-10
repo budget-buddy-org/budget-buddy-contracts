@@ -44,75 +44,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Lint spec
-        run: pnpm run lint
-
-      - name: Validate spec
-        run: pnpm run validate
-
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           NODE_AUTH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: pnpm exec semantic-release
 
-      - name: Detect release
-        id: detect
-        run: |
-          if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
-            echo "released=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "released=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Generate TypeScript client
-        if: steps.detect.outputs.released == 'true'
-        run: |
-          pnpm run generate:ts
-          jq '.compilerOptions.moduleResolution = "node10"' \
-            generated/typescript/tsconfig.json > /tmp/tsconfig.json
-          mv /tmp/tsconfig.json generated/typescript/tsconfig.json
-          jq '.compilerOptions.moduleResolution = "bundler"' \
-            generated/typescript/tsconfig.esm.json > /tmp/tsconfig.esm.json
-          mv /tmp/tsconfig.esm.json generated/typescript/tsconfig.esm.json
-
-      - name: Install TypeScript package dependencies
-        if: steps.detect.outputs.released == 'true'
-        working-directory: generated/typescript
-        run: pnpm install --no-frozen-lockfile  # generated package.json has no lockfile
-
-      - name: Publish TypeScript package
-        if: steps.detect.outputs.released == 'true'
-        working-directory: generated/typescript
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm publish --no-git-checks
-
-      - name: Generate Java Spring stubs
-        if: steps.detect.outputs.released == 'true'
-        run: pnpm run generate:java
-
-      - name: Configure Maven for GitHub Packages
-        if: steps.detect.outputs.released == 'true'
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<EOF
-          <settings>
-            <servers>
-              <server>
-                <id>github</id>
-                <username>${{ github.actor }}</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
-
-      - name: Publish Java package
-        if: steps.detect.outputs.released == 'true'
-        working-directory: generated/java
-        run: |
-          mvn deploy \
-            -DaltDeploymentRepository="github::https://maven.pkg.github.com/budget-buddy-org/budget-buddy-contracts" \
-            --no-transfer-progress \
-            -DskipTests

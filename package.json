@@ -5,25 +5,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./generated/typescript/index.ts",
-    "./models": "./generated/typescript/model/index.ts"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./generated/typescript/index.ts"
-      ],
-      "models": [
-        "./generated/typescript/model/index.ts"
-      ]
-    }
+    ".": "./generated/typescript/index.ts"
   },
   "scripts": {
     "prepare": "husky",
     "commitlint": "commitlint --edit",
     "validate": "openapi-generator-cli validate -i specs/openapi.yaml",
     "lint": "spectral lint specs/openapi.yaml --ruleset .spectral.yaml",
-    "generate:ts": "openapi-generator-cli generate -i specs/openapi.yaml -g typescript-axios -o generated/typescript -c config/typescript-axios.yaml --additional-properties=npmVersion=$(node -p \"require('./package.json').version\")",
+    "generate:ts": "openapi-ts",
     "generate:java": "openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml --additional-properties=artifactVersion=$(node -p \"require('./package.json').version\")",
     "generate:swift": "openapi-generator-cli generate -i specs/openapi.yaml -g swift6 -o /tmp/budget-buddy-swift -c config/swift6.yaml && rsync -a --delete /tmp/budget-buddy-swift/Sources/BudgetBuddyContracts/ Sources/BudgetBuddyContracts/",
     "generate": "pnpm run generate:ts && pnpm run generate:java && pnpm run generate:swift",
@@ -38,10 +27,11 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
+    "@hey-api/openapi-ts": "^0.95.0",
     "@openapitools/openapi-generator-cli": "^2.31.1",
     "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.6",
     "@semantic-release/npm": "^13.1.5",
