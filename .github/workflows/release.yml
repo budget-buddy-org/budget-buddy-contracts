@@ -47,7 +47,7 @@ jobs:
 
       - name: Run semantic-release
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          NODE_AUTH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          NODE_AUTH_TOKEN: ${{ github.token }}
         run: pnpm exec semantic-release
 
