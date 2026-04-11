@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v1.4.0...v1.4.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* **spec:** add missing format, constraints, and length bounds (closes [#46](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/46)) ([#60](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/60)) ([d6c1229](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/d6c1229e3dcca50ef410c2119bee2ef83381c4ca))
+
 # [1.4.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v1.3.4...v1.4.0) (2026-04-11)
 
 

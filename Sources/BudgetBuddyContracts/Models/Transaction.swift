@@ -14,6 +14,7 @@ public struct Transaction: Sendable, Codable, Hashable {
         case income = "INCOME"
     }
     public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: nil)
+    public static let descriptionRule = StringRule(minLength: nil, maxLength: 255, pattern: nil)
     /** Unique identifier for the transaction. */
     public var id: UUID
     /** UUID of the category this transaction belongs to. */
@@ -26,7 +27,7 @@ public struct Transaction: Sendable, Codable, Hashable {
     public var currency: String
     /** Date on which the transaction occurred (YYYY-MM-DD). */
     public var date: Date
-    /** Optional free-text note for the transaction. */
+    /** Optional free-text note for the transaction (up to 255 characters). */
     public var description: String?
     /** ISO 8601 timestamp when the transaction record was created. */
     public var createdAt: Date?

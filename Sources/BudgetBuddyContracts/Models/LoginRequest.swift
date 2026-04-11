@@ -9,9 +9,11 @@ import Foundation
 
 public struct LoginRequest: Sendable, Codable, Hashable {
 
-    /** The user's registered username. */
+    public static let usernameRule = StringRule(minLength: 3, maxLength: 50, pattern: nil)
+    public static let passwordRule = StringRule(minLength: 8, maxLength: nil, pattern: nil)
+    /** The user's registered username (3–50 characters). */
     public var username: String
-    /** The user's account password. */
+    /** The user's account password (minimum 8 characters). */
     public var password: String
 
     public init(username: String, password: String) {

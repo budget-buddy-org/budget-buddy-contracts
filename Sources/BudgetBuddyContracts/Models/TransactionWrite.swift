@@ -15,6 +15,7 @@ public struct TransactionWrite: Sendable, Codable, Hashable {
     }
     public static let amountRule = NumericRule<Int64>(minimum: 1, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: nil)
+    public static let descriptionRule = StringRule(minLength: nil, maxLength: 255, pattern: nil)
     /** UUID of the category this transaction belongs to. */
     public var categoryId: UUID
     /** Amount in minor units (e.g. 1299 = €12.99). Must be at least 1. */
@@ -25,7 +26,7 @@ public struct TransactionWrite: Sendable, Codable, Hashable {
     public var currency: String
     /** Date on which the transaction occurred (YYYY-MM-DD). */
     public var date: Date
-    /** Optional free-text note for the transaction. */
+    /** Optional free-text note for the transaction (up to 255 characters). */
     public var description: String?
 
     public init(categoryId: UUID, amount: Int64, type: ModelType, currency: String, date: Date, description: String? = nil) {
