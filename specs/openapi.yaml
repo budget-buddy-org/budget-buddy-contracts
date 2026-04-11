@@ -126,8 +126,8 @@ paths:
       description: Returns a paginated list of categories for the authenticated user.
       operationId: listCategories
       parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
       responses:
         "200":
           description: Category list
@@ -270,8 +270,8 @@ paths:
       description: Returns a paginated, filterable list of transactions for the authenticated user.
       operationId: listTransactions
       parameters:
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
         - name: categoryId
           in: query
           description: Filter by category
@@ -460,8 +460,17 @@ components:
         type: string
         format: uuid
 
-    limit:
-      name: limit
+    page:
+      name: page
+      in: query
+      description: Zero-based page number.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+    size:
+      name: size
       in: query
       description: Maximum number of items to return.
       schema:
@@ -469,15 +478,6 @@ components:
         minimum: 1
         maximum: 200
         default: 20
-
-    offset:
-      name: offset
-      in: query
-      description: Number of items to skip before returning results.
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
 
   responses:
     BadRequest:
@@ -739,14 +739,14 @@ components:
 
     PaginationMeta:
       type: object
-      required: [ limit, offset, total ]
+      required: [ page, size, total ]
       properties:
-        limit:
+        page:
+          type: integer
+          description: Zero-based page number returned in this response.
+        size:
           type: integer
           description: The page size used for this response.
-        offset:
-          type: integer
-          description: The number of items skipped before this page.
         total:
           type: integer
           format: int64
