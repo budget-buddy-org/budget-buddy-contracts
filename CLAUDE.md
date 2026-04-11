@@ -76,7 +76,7 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - `config/maven-settings.xml` — Maven server credentials template; references `${env.GITHUB_ACTOR}` and `${env.GITHUB_TOKEN}` so it is safe to commit (no hardcoded secrets)
 - `openapitools.json` — pins openapi-generator version (currently 7.21.0; needed for OAS 3.1 `type: [string, "null"]`)
 - `Package.swift` — makes this repo a valid Swift Package; points to `Sources/BudgetBuddyContracts/`
-- `.spectral.yaml` — enforces `operationId` on every operation (error) and tags (warn); generators rely on both
+- `.spectral.yaml` — enforces `operationId` on every operation (error), tags (warn), tag descriptions (warn), a 500 response on every operation (warn), and a `description` on every schema property (warn); generators rely on operationId and tags
 - `.github/workflows/commitlint.yml` — runs on every PR: validates individual commit messages and the PR title against conventional commit rules (PR title is what lands on `main` via squash merge)
 - `.github/workflows/validate.yml` — runs on PRs touching `specs/`, `config/`, `.spectral.yaml`, `openapi-ts.config.ts`, or `openapitools.json`: lints the spec, validates its structure, and smoke-tests TypeScript and Java generation
 - `.github/workflows/release.yml` — on push to `main`: generates a GitHub App token (`RELEASE_BOT_ID` + `RELEASE_BOT_PRIVATE_KEY` org secrets) to bypass the branch ruleset PR requirement, then runs semantic-release; has a 20-minute timeout
@@ -86,8 +86,12 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 ## Spec conventions
 
 - All operations have an `operationId` (required by Spectral, used for generated method names)
+- All operations document a `500` response using the reusable `InternalServerError` component
+- All schema properties have a `description` field (enforced by Spectral)
+- All API tags have a `description` field (enforced by Spectral)
 - Error responses use `application/problem+json` with the `Problem` schema (RFC 9457)
 - Amounts are `integer` in minor currency units (e.g. `1299` = €12.99)
 - Write schemas (POST/PUT body) and Update schemas (PATCH body) are separate from read schemas
 - PATCH schemas represent partial updates: fields are optional, and empty patch objects are invalid
 - Auth endpoints override global security with `security: []`
+- When adding a `description` alongside a `$ref`, use `allOf` wrapping: `allOf: [{$ref: ...}]` with `description` as a sibling — avoids Spectral false positives with bare `$ref` + `description`

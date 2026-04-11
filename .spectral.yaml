@@ -5,3 +5,21 @@ rules:
   # Tags group operations into separate API classes in generated code
   operation-tags: warn
   operation-tag-defined: warn
+  # Tags should describe their purpose for generated API docs
+  tag-description: warn
+  # Every operation must document a 500 response so clients can handle server errors
+  operation-500-response:
+    message: "Operation '{{path}}' is missing a 500 response — all operations should document server error behaviour."
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete,options,head,trace]"
+    then:
+      field: "responses.500"
+      function: truthy
+  # Every schema property should have a description for generated client documentation
+  schema-property-description:
+    message: "Property '{{path}}' is missing a description."
+    severity: warn
+    given: "$.components.schemas[*].properties[*]"
+    then:
+      field: description
+      function: truthy
