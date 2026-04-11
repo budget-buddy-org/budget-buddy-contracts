@@ -538,11 +538,14 @@ components:
       properties:
         username:
           type: string
-          description: The user's registered username.
+          description: The user's registered username (3–50 characters).
+          minLength: 3
+          maxLength: 50
           example: john
         password:
           type: string
-          description: The user's account password.
+          description: The user's account password (minimum 8 characters).
+          minLength: 8
           example: strongpassword123
 
     RefreshTokenRequest:
@@ -657,7 +660,8 @@ components:
           example: 2026-03-08
         description:
           type: string
-          description: Optional free-text note for the transaction.
+          description: Optional free-text note for the transaction (up to 255 characters).
+          maxLength: 255
           example: Coffee
         createdAt:
           type: string
@@ -698,7 +702,8 @@ components:
           description: Date on which the transaction occurred (YYYY-MM-DD).
         description:
           type: string
-          description: Optional free-text note for the transaction.
+          description: Optional free-text note for the transaction (up to 255 characters).
+          maxLength: 255
 
     TransactionUpdate:
       type: object
@@ -711,6 +716,7 @@ components:
           description: UUID of the category to reassign this transaction to.
         amount:
           type: integer
+          format: int64
           description: New amount in minor units. Must be at least 1.
           minimum: 1
         type:
@@ -728,7 +734,8 @@ components:
           description: New transaction date (YYYY-MM-DD).
         description:
           type: [ string, "null" ]
-          description: Updated free-text note. Pass null to clear the existing note.
+          description: Updated free-text note (up to 255 characters). Pass null to clear the existing note.
+          maxLength: 255
 
     PaginationMeta:
       type: object

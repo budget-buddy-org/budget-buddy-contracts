@@ -90,7 +90,10 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - All schema properties have a `description` field (enforced by Spectral)
 - All API tags have a `description` field (enforced by Spectral)
 - Error responses use `application/problem+json` with the `Problem` schema (RFC 9457)
-- Amounts are `integer` in minor currency units (e.g. `1299` = €12.99)
+- Amounts are `integer` with `format: int64` in minor currency units (e.g. `1299` = €12.99); applies to all amount fields across read, write, and update schemas
+- Currency codes are `string` with `minLength: 3` and `maxLength: 3` (ISO 4217)
+- Free-text note fields (`description`) are bounded with `maxLength: 255` across all schemas; nullable update variants (`type: [string, "null"]`) carry the same bound
+- `LoginRequest` mirrors `RegisterRequest` validation: `username` requires `minLength: 3` / `maxLength: 50`, `password` requires `minLength: 8`
 - Write schemas (POST/PUT body) and Update schemas (PATCH body) are separate from read schemas
 - PATCH schemas represent partial updates: fields are optional, and empty patch objects are invalid
 - Auth endpoints override global security with `security: []`
