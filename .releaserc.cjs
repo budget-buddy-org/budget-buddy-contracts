@@ -1,8 +1,8 @@
 module.exports = {
   branches: ["main"],
   plugins: [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+    ["@semantic-release/commit-analyzer", { preset: "conventionalcommits" }],
+    ["@semantic-release/release-notes-generator", { preset: "conventionalcommits" }],
     // Writes CHANGELOG.md (prepare phase, before git commit)
     "@semantic-release/changelog",
     // Bumps package.json version (prepare phase)
