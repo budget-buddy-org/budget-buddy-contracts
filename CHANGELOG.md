@@ -1,3 +1,9 @@
+## [2.1.2](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v2.1.1...v2.1.2) (2026-04-12)
+
+### Bug Fixes
+
+* **ci:** approve esbuild build scripts for pnpm v10 ([#71](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/71)) ([8527540](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/852754036c9562c5fbeed4e34fad184cb665e427))
+
 ## [2.1.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v2.1.0...v2.1.1) (2026-04-12)
 
 ### Bug Fixes
