@@ -1,3 +1,16 @@
+## [3.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v2.3.0...v3.0.0) (2026-04-18)
+
+### ⚠ BREAKING CHANGES
+
+* Auth endpoints and schemas removed from the spec.
+Generated clients lose loginUser(), registerUser(), refreshToken(),
+logoutUser() and all auth-related models. Consumers must integrate
+Zitadel directly for authentication.
+
+### Features
+
+* remove auth endpoints from OpenAPI spec (closes [#73](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/73)) ([#76](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/76)) ([8bdd212](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/8bdd2121c195118f5dcc710d552b3de70b06e709))
+
 ## [2.3.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v2.2.0...v2.3.0) (2026-04-17)
 
 ### Features

@@ -3,7 +3,7 @@ openapi: 3.1.0
 info:
   title: Budget Buddy API
   description: REST API for Budget Buddy.
-  version: "2.3.0"
+  version: "3.0.0"
   contact:
     name: Budget Buddy
     url: https://github.com/budget-buddy-org/budget-buddy-contracts
