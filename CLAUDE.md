@@ -93,9 +93,8 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - Amounts are `integer` with `format: int64` in minor currency units (e.g. `1299` = €12.99); applies to all amount fields across read, write, and update schemas
 - Currency codes are `string` with `minLength: 3` and `maxLength: 3` (ISO 4217)
 - Free-text note fields (`description`) are bounded with `maxLength: 255` across all schemas; nullable update variants (`type: [string, "null"]`) carry the same bound
-- `LoginRequest` mirrors `RegisterRequest` validation: `username` requires `minLength: 3` / `maxLength: 50`, `password` requires `minLength: 8`
 - Write schemas (POST/PUT body) and Update schemas (PATCH body) are separate from read schemas
 - PATCH schemas represent partial updates: fields are optional, and empty patch objects are invalid
 - List endpoints (`GET /v1/categories`, `GET /v1/transactions`) use `page` (zero-based, min 0, default 0) and `size` (min 1, max 200, default 20) query parameters; `PaginationMeta` returns `page`, `size`, and `total`
-- Auth endpoints override global security with `security: []`
+- Authentication is handled externally by Zitadel (OIDC); no auth endpoints exist in this spec — all endpoints require `BearerAuth` (Zitadel-issued JWTs)
 - When adding a `description` alongside a `$ref`, use `allOf` wrapping: `allOf: [{$ref: ...}]` with `description` as a sibling — avoids Spectral false positives with bare `$ref` + `description`
