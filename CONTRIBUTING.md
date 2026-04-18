@@ -2,7 +2,14 @@
 
 ## Release process
 
-Releases are fully automated via semantic-release on push to `main`. See `CLAUDE.md` for the full workflow.
+Releases are fully automated from `main` using semantic-release.
+
+- A push to `main` triggers `release.yml`, which computes the next semantic version, creates the Git tag, and creates the GitHub Release.
+- The publish workflow (`publish.yml`) then publishes both package artifacts:
+  - `@budget-buddy-org/budget-buddy-contracts` (npm)
+  - `com.budget-buddy:budget-buddy-contracts` (Maven)
+
+`CLAUDE.md` may contain additional assistant-oriented context, but this document is the source of truth for contributor release operations.
 
 ## Recovery: partial publish failure
 
