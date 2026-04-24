@@ -356,6 +356,22 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: |
+        OIDC-issued JWT access token. The API accepts two equivalent authorization
+        schemes at the HTTP layer:
+
+        - `Authorization: Bearer <jwt>` — standard bearer token. Used by
+          non-browser clients (iOS, Telegram bot, server-to-server callers) where
+          the access token is already stored in a hardware-backed keystore.
+        - `Authorization: DPoP <jwt>` + `DPoP: <proof>` — sender-constrained
+          token per [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449).
+          Used by the browser web app, which holds a non-extractable keypair in
+          IndexedDB. Even if the token is exfiltrated, it cannot be replayed
+          from another origin or device.
+
+        This scheme document describes the bearer variant; DPoP is a protocol-level
+        concern handled by the resource server (Spring Security 7 auto-wires it)
+        and does not change any endpoint shape.
 
   parameters:
     categoryId:
