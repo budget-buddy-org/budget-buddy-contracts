@@ -257,6 +257,65 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /v1/transactions/summary/trend:
+    get:
+      tags: [ transactions ]
+      summary: Monthly summary trend across a month range
+      description: |
+        Returns one `MonthlySummary` per calendar month across an inclusive range, in a single
+        currency, scoped to the authenticated user. Intended for sparkline / trend visualisations
+        that need per-month buckets in a single request.
+
+        Months in the range with no matching transactions are returned with zeroed totals, so
+        the response array length always equals the number of months between `from` and `to`
+        inclusive. Buckets are ordered oldest first.
+
+        Only transactions whose `currency` matches the requested currency contribute to `income`,
+        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
+        are reflected in `excludedTransactionCount`.
+
+        The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound
+        query cost.
+      operationId: getTransactionsSummaryTrend
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: First calendar month in the range (inclusive), formatted YYYY-MM. Interpreted in UTC.
+          schema:
+            type: string
+            pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
+            example: "2025-12"
+        - name: to
+          in: query
+          required: true
+          description: Last calendar month in the range (inclusive), formatted YYYY-MM. Must be greater than or equal to `from`, and no more than 24 months after `from`.
+          schema:
+            type: string
+            pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
+            example: "2026-05"
+        - name: currency
+          in: query
+          required: true
+          description: ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense.
+          schema:
+            $ref: "#/components/schemas/Currency"
+      responses:
+        "200":
+          description: One `MonthlySummary` per calendar month in the requested range, oldest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlySummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /v1/transactions:
     get:
       tags: [ transactions ]
@@ -803,7 +862,7 @@ components:
         month:
           type: string
           pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-          description: Calendar month echoed back from the request, formatted YYYY-MM.
+          description: Calendar month this summary covers, formatted YYYY-MM.
           example: "2026-05"
         currency:
           description: ISO 4217 currency code echoed back from the request.
