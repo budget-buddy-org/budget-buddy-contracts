@@ -183,6 +183,55 @@ open class TransactionsAPI {
     }
 
     /**
+     Monthly summary trend across a month range
+     
+     - parameter from: (query) First calendar month in the range (inclusive), formatted YYYY-MM. Interpreted in UTC. 
+     - parameter to: (query) Last calendar month in the range (inclusive), formatted YYYY-MM. Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense. 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: [MonthlySummary]
+     */
+    open class func getTransactionsSummaryTrend(from: String, to: String, currency: String, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> [MonthlySummary] {
+        return try await getTransactionsSummaryTrendWithRequestBuilder(from: from, to: to, currency: currency, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     Monthly summary trend across a month range
+     - GET /v1/transactions/summary/trend
+     - Returns one `MonthlySummary` per calendar month across an inclusive range, in a single currency, scoped to the authenticated user. Intended for sparkline / trend visualisations that need per-month buckets in a single request.  Months in the range with no matching transactions are returned with zeroed totals, so the response array length always equals the number of months between `from` and `to` inclusive. Buckets are ordered oldest first.  Only transactions whose `currency` matches the requested currency contribute to `income`, `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies are reflected in `excludedTransactionCount`.  The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound query cost. 
+     - Bearer Token:
+       - type: http
+       - name: BearerAuth
+     - parameter from: (query) First calendar month in the range (inclusive), formatted YYYY-MM. Interpreted in UTC. 
+     - parameter to: (query) Last calendar month in the range (inclusive), formatted YYYY-MM. Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense. 
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<[MonthlySummary]> 
+     */
+    open class func getTransactionsSummaryTrendWithRequestBuilder(from: String, to: String, currency: String, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<[MonthlySummary]> {
+        let localVariablePath = "/v1/transactions/summary/trend"
+        let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
+
+        var localVariableUrlComponents = URLComponents(string: localVariableURLString)
+        localVariableUrlComponents?.queryItems = APIHelper.mapValuesToQueryItems([
+            "from": (wrappedValue: from.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+            "to": (wrappedValue: to.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+            "currency": (wrappedValue: currency.asParameter(codableHelper: apiConfiguration.codableHelper), isExplode: true),
+        ])
+
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
+
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<[MonthlySummary]>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    }
+
+    /**
      * enum for parameter sort
      */
     public enum Sort_listTransactions: String, Sendable, CaseIterable {

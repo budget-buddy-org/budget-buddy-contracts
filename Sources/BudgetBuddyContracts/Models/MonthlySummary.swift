@@ -16,7 +16,7 @@ public struct MonthlySummary: Sendable, Codable, Hashable {
     public static let incomeCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let expenseCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let excludedTransactionCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
-    /** Calendar month echoed back from the request, formatted YYYY-MM. */
+    /** Calendar month this summary covers, formatted YYYY-MM. */
     public var month: String
     /** ISO 4217 currency code echoed back from the request. */
     public var currency: String

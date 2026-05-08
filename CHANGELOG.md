@@ -1,3 +1,30 @@
+## [4.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v3.4.0...v4.0.0) (2026-05-08)
+
+### ⚠ BREAKING CHANGES
+
+* GET /v1/transactions/summary no longer accepts the
+`month` query parameter and now returns an array of MonthlySummary
+instead of a single object. Callers must migrate to `from`/`to`.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* feat: add getTransactionsSummaryTrend endpoint
+
+Splits per-month bucket trends into a separate endpoint instead of
+overloading getTransactionsSummary. The single-month endpoint stays
+untouched (one MonthlySummary, no [0] unwrap on the client). The new
+endpoint serves dashboard sparklines: from/to month range, returns
+MonthlySummary[] oldest first, empty months zero-filled, max 24 months.
+
+Each endpoint speaks its native shape; no consumer has to unwrap a
+1-element array for the common case.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+### Features
+
+* add getTransactionsSummaryTrend endpoint ([#96](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/96)) ([84e4dc9](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/84e4dc91cffba101545f3b7b29e9507617765bfe))
+
 ## [3.4.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v3.3.0...v3.4.0) (2026-05-06)
 
 ### Features
