@@ -1,3 +1,9 @@
+## [4.1.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v4.0.0...v4.1.0) (2026-05-10)
+
+### Features
+
+* add user self-management endpoints ([#103](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/103)) ([41eb733](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/41eb7334856528a354ee6c5af95e21b713e74d2d))
+
 ## [4.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v3.4.0...v4.0.0) (2026-05-08)
 
 ### ⚠ BREAKING CHANGES
