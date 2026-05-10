@@ -21,7 +21,7 @@
     "pnpm": ">=10"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.3",
+    "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@hey-api/openapi-ts": "^0.97.1",
     "@openapitools/openapi-generator-cli": "^2.32.0",
