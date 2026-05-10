@@ -25,6 +25,8 @@ tags:
     description: Manage spending categories for the authenticated user.
   - name: transactions
     description: Record and query financial transactions for the authenticated user.
+  - name: users
+    description: Manage the authenticated user's identity, global preferences, and per-client settings.
 
 security:
   - BearerAuth: [ ]
@@ -512,6 +514,214 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /v1/users/me:
+    get:
+      tags: [ users ]
+      summary: Get current user
+      description: |
+        Returns the authenticated user's local identity record together with their global preferences,
+        in a single response intended as a client bootstrap call.
+
+        If the user has not yet customised their preferences, server defaults are returned (preferences
+        rows are created lazily on first write).
+      operationId: getCurrentUser
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Me"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags: [ users ]
+      summary: Delete current user account
+      description: |
+        Permanently deletes the authenticated user's account. The API first asks the configured
+        identity provider to delete the user; on success it then removes the local user row, which
+        cascade-deletes all owned data (categories, transactions, preferences, per-client settings).
+
+        If the identity provider call fails, no local data is deleted and the request errors so the
+        client can prompt the user to retry. After a successful delete the bearer token may still be
+        valid until it expires; clients should clear local credentials and end the session.
+      operationId: deleteCurrentUser
+      responses:
+        "204":
+          description: Account deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /v1/users/me/preferences:
+    get:
+      tags: [ users ]
+      summary: Get current user's preferences
+      description: |
+        Returns the authenticated user's global preferences (language, currency, timezone). If no
+        preferences row exists yet, server defaults are returned.
+      operationId: getCurrentUserPreferences
+      responses:
+        "200":
+          description: User preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPreferences"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags: [ users ]
+      summary: Replace current user's preferences
+      description: |
+        Fully replaces the authenticated user's global preferences. All fields in the body are
+        applied; the preferences row is created on first call.
+      operationId: replaceCurrentUserPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPreferencesWrite"
+      responses:
+        "200":
+          description: Replaced preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPreferences"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    patch:
+      tags: [ users ]
+      summary: Partially update current user's preferences
+      description: |
+        Partially updates the authenticated user's global preferences; only fields included in the
+        request body are modified. Empty patch objects are invalid and return 400.
+      operationId: updateCurrentUserPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPreferencesUpdate"
+      responses:
+        "200":
+          description: Updated preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPreferences"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /v1/users/me/settings:
+    get:
+      tags: [ users ]
+      summary: List current user's per-client settings
+      description: |
+        Returns every per-client settings row owned by the authenticated user, oldest first. Intended
+        for management UIs where the user reviews which clients have stored customisations. The list
+        is small in practice (one row per active client) so no pagination is provided.
+      operationId: listCurrentUserClientSettings
+      responses:
+        "200":
+          description: All per-client settings rows for the current user
+          content:
+            application/json:
+              schema:
+                type: array
+                description: One entry per client that has stored settings; empty array if none.
+                items:
+                  $ref: "#/components/schemas/ClientSettings"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /v1/users/me/settings/{clientId}:
+    parameters:
+      - $ref: "#/components/parameters/clientId"
+
+    get:
+      tags: [ users ]
+      summary: Get per-client settings
+      description: |
+        Returns the authenticated user's stored settings for a single client (e.g. `web`,
+        `mobile-ios`, `telegram-bot`). Returns 404 if no settings have been stored for that client.
+      operationId: getCurrentUserClientSettings
+      responses:
+        "200":
+          description: Client settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientSettings"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags: [ users ]
+      summary: Upsert per-client settings
+      description: |
+        Stores (or replaces) the authenticated user's settings for a single client. The body is an
+        opaque JSON object owned by the client app — the server does not validate its shape.
+      operationId: replaceCurrentUserClientSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientSettingsWrite"
+      responses:
+        "200":
+          description: Stored client settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientSettings"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags: [ users ]
+      summary: Delete per-client settings
+      description: Removes the authenticated user's stored settings for a single client.
+      operationId: deleteCurrentUserClientSettings
+      responses:
+        "204":
+          description: Client settings deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     BearerAuth:
@@ -539,6 +749,19 @@ components:
       schema:
         type: string
         format: uuid
+
+    clientId:
+      name: clientId
+      in: path
+      required: true
+      description: |
+        Client identifier used to scope per-client settings. Conventional values include `web`,
+        `mobile-ios`, `mobile-android`, `telegram-bot`. Lowercase letters, digits, and hyphens only;
+        up to 32 characters.
+      schema:
+        type: string
+        pattern: "^[a-z0-9-]{1,32}$"
+        example: web
 
     page:
       name: page
@@ -954,3 +1177,153 @@ components:
         message:
           type: string
           description: Human-readable error message for the field.
+
+    Language:
+      type: string
+      description: |
+        BCP 47 language tag (e.g. `en`, `en-US`, `de`, `pt-BR`). Two- or three-letter primary
+        subtag, optionally followed by a hyphen and a two-letter region subtag.
+      pattern: "^[a-z]{2,3}(-[A-Z]{2})?$"
+      minLength: 2
+      maxLength: 7
+      example: en-US
+
+    Timezone:
+      type: string
+      description: |
+        IANA Time Zone Database identifier (e.g. `UTC`, `Europe/Berlin`, `America/New_York`).
+        Validated server-side against the JVM's known zones.
+      minLength: 1
+      maxLength: 64
+      example: Europe/Berlin
+
+    UserPreferences:
+      type: object
+      description: |
+        Global, cross-client preferences for the authenticated user. Used by server-side logic
+        (formatting, future notifications) and by clients that want a consistent locale across
+        sessions.
+      required: [ language, currency, timezone ]
+      properties:
+        language:
+          description: Preferred language as a BCP 47 tag.
+          allOf:
+            - $ref: "#/components/schemas/Language"
+        currency:
+          description: Preferred currency as an ISO 4217 three-letter code.
+          allOf:
+            - $ref: "#/components/schemas/Currency"
+        timezone:
+          description: Preferred IANA timezone.
+          allOf:
+            - $ref: "#/components/schemas/Timezone"
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the preferences row was first created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the preferences row was last updated.
+
+    UserPreferencesWrite:
+      type: object
+      description: Full replacement of the user's global preferences (PUT semantics).
+      required: [ language, currency, timezone ]
+      properties:
+        language:
+          description: Preferred language as a BCP 47 tag.
+          allOf:
+            - $ref: "#/components/schemas/Language"
+        currency:
+          description: Preferred currency as an ISO 4217 three-letter code.
+          allOf:
+            - $ref: "#/components/schemas/Currency"
+        timezone:
+          description: Preferred IANA timezone.
+          allOf:
+            - $ref: "#/components/schemas/Timezone"
+
+    UserPreferencesUpdate:
+      type: object
+      description: Patch request — only provided fields are updated. At least one field must be provided.
+      minProperties: 1
+      properties:
+        language:
+          description: New preferred language as a BCP 47 tag.
+          allOf:
+            - $ref: "#/components/schemas/Language"
+        currency:
+          description: New preferred currency as an ISO 4217 three-letter code.
+          allOf:
+            - $ref: "#/components/schemas/Currency"
+        timezone:
+          description: New preferred IANA timezone.
+          allOf:
+            - $ref: "#/components/schemas/Timezone"
+
+    Me:
+      type: object
+      description: |
+        Authenticated user's local identity record together with their global preferences. Intended
+        as a single bootstrap call for client apps.
+      required: [ id, preferences ]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The local Budget Buddy user UUID, derived from the OIDC subject on first login. Stable across sessions and used as the owner of all user-scoped resources.
+        preferences:
+          description: The user's current global preferences (server defaults if none have been stored).
+          allOf:
+            - $ref: "#/components/schemas/UserPreferences"
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the local user record was first provisioned.
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the local user record was last updated.
+
+    ClientSettings:
+      type: object
+      description: |
+        Per-client UI/UX settings (themes, font sizes, layout preferences, etc.) for a single client
+        of the authenticated user. The `settings` payload is opaque to the server — clients own its
+        schema.
+      required: [ clientId, settings ]
+      properties:
+        clientId:
+          type: string
+          description: The client this settings row belongs to (matches the path parameter).
+          pattern: "^[a-z0-9-]{1,32}$"
+          example: web
+        settings:
+          type: object
+          description: Free-form JSON object owned by the client. The server stores and returns it as-is and does not validate its shape.
+          additionalProperties: true
+          example:
+            theme: dark
+            fontSize: 14
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when this client settings row was first created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when this client settings row was last updated.
+
+    ClientSettingsWrite:
+      type: object
+      description: Body for upserting per-client settings (PUT semantics — fully replaces any existing settings for the client).
+      required: [ settings ]
+      properties:
+        settings:
+          type: object
+          description: Free-form JSON object owned by the client. Stored and returned as-is.
+          additionalProperties: true
+          example:
+            theme: dark
+            fontSize: 14
