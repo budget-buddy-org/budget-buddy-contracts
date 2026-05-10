@@ -23,7 +23,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^21.0.0",
-    "@hey-api/openapi-ts": "^0.97.0",
+    "@hey-api/openapi-ts": "^0.97.1",
     "@openapitools/openapi-generator-cli": "^2.32.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
