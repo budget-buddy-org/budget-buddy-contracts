@@ -542,9 +542,8 @@ paths:
       summary: Delete current user account
       description: |
         Permanently deletes the authenticated user's account. The API first asks the configured
-        identity provider (Zitadel) to delete the user; on success it then removes the local user
-        row, which cascade-deletes all owned data (categories, transactions, preferences, per-client
-        settings).
+        identity provider to delete the user; on success it then removes the local user row, which
+        cascade-deletes all owned data (categories, transactions, preferences, per-client settings).
 
         If the identity provider call fails, no local data is deleted and the request errors so the
         client can prompt the user to retry. After a successful delete the bearer token may still be
@@ -1268,15 +1267,12 @@ components:
       description: |
         Authenticated user's local identity record together with their global preferences. Intended
         as a single bootstrap call for client apps.
-      required: [ id, oidcSubject, preferences ]
+      required: [ id, preferences ]
       properties:
         id:
           type: string
           format: uuid
           description: The local Budget Buddy user UUID, derived from the OIDC subject on first login. Stable across sessions and used as the owner of all user-scoped resources.
-        oidcSubject:
-          type: string
-          description: The `sub` claim from the OIDC-issued JWT. Identifies the user in the external identity provider.
         preferences:
           description: The user's current global preferences (server defaults if none have been stored).
           allOf:
