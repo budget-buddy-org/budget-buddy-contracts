@@ -9,16 +9,10 @@ info:
     url: https://github.com/budget-buddy-org/budget-buddy-contracts
 
 servers:
-  - url: "{scheme}://{host}"
-    description: Configurable Budget Buddy API server
-    variables:
-      scheme:
-        default: http
-        enum:
-          - http
-          - https
-      host:
-        default: localhost:8080
+  - url: https://budgetbuddy.glebremniov.keenetic.link
+    description: Production (self-hosted on Raspberry Pi behind nginx).
+  - url: http://localhost:8080
+    description: Local development (`./gradlew bootRun --args='--spring.profiles.active=dev'`).
 
 tags:
   - name: categories
@@ -98,20 +92,8 @@ paths:
         `excludedTransactionCount` so the UI can surface an informational note.
       operationId: getCategoriesSummary
       parameters:
-        - name: month
-          in: query
-          required: true
-          description: Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC.
-          schema:
-            type: string
-            pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-            example: "2026-05"
-        - name: currency
-          in: query
-          required: true
-          description: ISO 4217 three-letter currency code. Only transactions in this currency contribute to `spent`.
-          schema:
-            $ref: "#/components/schemas/Currency"
+        - $ref: "#/components/parameters/monthQuery"
+        - $ref: "#/components/parameters/currencyQuery"
       responses:
         "200":
           description: Per-category spending summary for the requested month and currency
@@ -231,20 +213,8 @@ paths:
         are reflected in `excludedTransactionCount` so the UI can surface an informational note.
       operationId: getTransactionsSummary
       parameters:
-        - name: month
-          in: query
-          required: true
-          description: Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC.
-          schema:
-            type: string
-            pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-            example: "2026-05"
-        - name: currency
-          in: query
-          required: true
-          description: ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense.
-          schema:
-            $ref: "#/components/schemas/Currency"
+        - $ref: "#/components/parameters/monthQuery"
+        - $ref: "#/components/parameters/currencyQuery"
       responses:
         "200":
           description: Monthly summary for the requested month and currency
@@ -283,25 +253,16 @@ paths:
         - name: from
           in: query
           required: true
-          description: First calendar month in the range (inclusive), formatted YYYY-MM. Interpreted in UTC.
+          description: First calendar month in the range (inclusive).
           schema:
-            type: string
-            pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-            example: "2025-12"
+            $ref: "#/components/schemas/Month"
         - name: to
           in: query
           required: true
-          description: Last calendar month in the range (inclusive), formatted YYYY-MM. Must be greater than or equal to `from`, and no more than 24 months after `from`.
+          description: Last calendar month in the range (inclusive). Must be greater than or equal to `from`, and no more than 24 months after `from`.
           schema:
-            type: string
-            pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-            example: "2026-05"
-        - name: currency
-          in: query
-          required: true
-          description: ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense.
-          schema:
-            $ref: "#/components/schemas/Currency"
+            $ref: "#/components/schemas/Month"
+        - $ref: "#/components/parameters/currencyQuery"
       responses:
         "200":
           description: One `MonthlySummary` per calendar month in the requested range, oldest first.
@@ -349,10 +310,9 @@ paths:
             minimum: 1
         - name: categoryId
           in: query
-          description: Filter by category
+          description: Filter to transactions assigned to this category.
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/Uuid"
         - name: start
           in: query
           description: Inclusive start date
@@ -557,6 +517,27 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /v1/users/me/data:
+    delete:
+      tags: [ users ]
+      summary: Clear current user's data
+      description: |
+        Permanently deletes every category and transaction owned by the authenticated user, while
+        leaving the account itself intact. Preferences and per-client settings are preserved; the
+        identity provider is not contacted and the bearer token remains valid.
+
+        Intended for "start over" flows where the user wants to wipe their financial history without
+        losing their sign-in or app configuration. The operation is idempotent — a second call on an
+        already-empty account returns 204.
+      operationId: clearCurrentUserData
+      responses:
+        "204":
+          description: Data cleared
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /v1/users/me/preferences:
     get:
       tags: [ users ]
@@ -736,32 +717,41 @@ components:
       name: categoryId
       in: path
       required: true
-      description: Category UUID
+      description: Category UUID.
       schema:
-        type: string
-        format: uuid
+        $ref: "#/components/schemas/Uuid"
 
     transactionId:
       name: transactionId
       in: path
       required: true
-      description: Transaction UUID
+      description: Transaction UUID.
       schema:
-        type: string
-        format: uuid
+        $ref: "#/components/schemas/Uuid"
 
     clientId:
       name: clientId
       in: path
       required: true
-      description: |
-        Client identifier used to scope per-client settings. Conventional values include `web`,
-        `mobile-ios`, `mobile-android`, `telegram-bot`. Lowercase letters, digits, and hyphens only;
-        up to 32 characters.
+      description: Client this settings row belongs to. See the `ClientId` schema for the allowed format.
       schema:
-        type: string
-        pattern: "^[a-z0-9-]{1,32}$"
-        example: web
+        $ref: "#/components/schemas/ClientId"
+
+    monthQuery:
+      name: month
+      in: query
+      required: true
+      description: Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC.
+      schema:
+        $ref: "#/components/schemas/Month"
+
+    currencyQuery:
+      name: currency
+      in: query
+      required: true
+      description: ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals.
+      schema:
+        $ref: "#/components/schemas/Currency"
 
     page:
       name: page
@@ -784,7 +774,11 @@ components:
 
   responses:
     BadRequest:
-      description: Bad request
+      description: |
+        Bad request. When the failure is per-field validation (e.g. unknown field, value out of
+        bounds), the response `Problem` has `errors[]` populated with one `FieldError` per offending
+        field. For other 400s (semantic validation, cross-field rules), `errors[]` is omitted and
+        the human-readable summary is in `detail`.
       content:
         application/problem+json:
           schema:
@@ -814,35 +808,29 @@ components:
   schemas:
     Category:
       type: object
-      required: [ id, name ]
+      required: [ id, name, monthlyBudget ]
       properties:
         id:
-          type: string
-          format: uuid
           description: Unique identifier for the category.
-          example: 550e8400-e29b-41d4-a716-446655440000
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         name:
           type: string
-          description: Human-readable name of the category.
+          description: Human-readable name of the category (1–255 characters).
+          minLength: 1
+          maxLength: 255
           example: Groceries
         monthlyBudget:
           type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Null means no budget set.
+          description: Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Null when no budget is set.
           example: 50000
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the category was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the category was last updated.
 
     CategoryWrite:
       type: object
-      required: [ name ]
+      additionalProperties: false
+      required: [ name, monthlyBudget ]
       properties:
         name:
           type: string
@@ -854,11 +842,12 @@ components:
           type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Monthly spending budget for this category, in minor units. Omit or pass null for no budget.
+          description: Monthly spending budget for this category, in minor units. Pass null for no budget.
           example: 50000
 
     CategoryUpdate:
       type: object
+      additionalProperties: false
       description: Patch request — only provided fields are updated. At least one field must be provided.
       minProperties: 1
       properties:
@@ -875,13 +864,32 @@ components:
           description: New monthly budget in minor units. Pass null to clear an existing budget.
           example: 75000
 
+    Uuid:
+      type: string
+      format: uuid
+      description: RFC 4122 UUID, lowercase hex with hyphens.
+      example: 550e8400-e29b-41d4-a716-446655440000
+
+    Month:
+      type: string
+      description: Calendar month formatted as YYYY-MM. Interpreted in UTC.
+      pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
+      example: "2026-05"
+
     Currency:
       type: string
       description: ISO 4217 three-letter currency code (uppercase letters only).
       pattern: "^[A-Z]{3}$"
-      minLength: 3
-      maxLength: 3
       example: EUR
+
+    ClientId:
+      type: string
+      description: |
+        Client identifier used to scope per-client settings. Conventional values include `web`,
+        `mobile-ios`, `mobile-android`, `telegram-bot`. Lowercase letters, digits, and hyphens only;
+        up to 32 characters.
+      pattern: "^[a-z0-9-]{1,32}$"
+      example: web
 
     TransactionType:
       type: string
@@ -892,20 +900,21 @@ components:
 
     Transaction:
       type: object
-      required: [ id, categoryId, amount, type, currency, date ]
+      required: [ id, categoryId, amount, type, currency, date, description ]
       properties:
         id:
-          type: string
-          format: uuid
           description: Unique identifier for the transaction.
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         categoryId:
-          type: string
-          format: uuid
           description: UUID of the category this transaction belongs to.
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         amount:
           type: integer
           format: int64
-          description: Amount in minor units (e.g. 1299 = €12.99).
+          description: Amount in minor units (e.g. 1299 = €12.99). Always at least 1.
+          minimum: 1
           example: 1299
         type:
           description: Whether this transaction is an outgoing expense or incoming income.
@@ -921,27 +930,21 @@ components:
           description: Date on which the transaction occurred (YYYY-MM-DD).
           example: 2026-03-08
         description:
-          type: string
-          description: Optional free-text note for the transaction (up to 255 characters).
+          type: [ string, "null" ]
+          description: Free-text note for the transaction (1–255 characters). Null when no note is set.
+          minLength: 1
           maxLength: 255
           example: Coffee
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the transaction record was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the transaction record was last updated.
 
     TransactionWrite:
       type: object
-      required: [ categoryId, amount, type, currency, date ]
+      additionalProperties: false
+      required: [ categoryId, amount, type, currency, date, description ]
       properties:
         categoryId:
-          type: string
-          format: uuid
           description: UUID of the category this transaction belongs to.
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         amount:
           type: integer
           format: int64
@@ -961,19 +964,21 @@ components:
           format: date
           description: Date on which the transaction occurred (YYYY-MM-DD).
         description:
-          type: string
-          description: Optional free-text note for the transaction (up to 255 characters).
+          type: [ string, "null" ]
+          description: Free-text note for the transaction (1–255 characters). Pass null for no note.
+          minLength: 1
           maxLength: 255
 
     TransactionUpdate:
       type: object
+      additionalProperties: false
       description: Patch request — only provided fields are updated. At least one field must be provided.
       minProperties: 1
       properties:
         categoryId:
-          type: string
-          format: uuid
           description: UUID of the category to reassign this transaction to.
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         amount:
           type: integer
           format: int64
@@ -993,7 +998,8 @@ components:
           description: New transaction date (YYYY-MM-DD).
         description:
           type: [ string, "null" ]
-          description: Updated free-text note (up to 255 characters). Pass null to clear the existing note.
+          description: Updated free-text note (1–255 characters). Pass null to clear the existing note.
+          minLength: 1
           maxLength: 255
 
     PaginationMeta:
@@ -1027,15 +1033,17 @@ components:
 
     CategorySpendingRow:
       type: object
-      required: [ categoryId, categoryName, spent, transactionCount, excludedTransactionCount ]
+      required: [ categoryId, categoryName, monthlyBudget, spent, transactionCount, excludedTransactionCount ]
       properties:
         categoryId:
-          type: string
-          format: uuid
           description: UUID of the category this row summarises.
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         categoryName:
           type: string
-          description: Human-readable name of the category at the time of the response.
+          description: Human-readable name of the category at the time of the response (1–255 characters).
+          minLength: 1
+          maxLength: 255
         monthlyBudget:
           type: [ integer, "null" ]
           format: int64
@@ -1064,10 +1072,9 @@ components:
       required: [ month, currency, items ]
       properties:
         month:
-          type: string
-          pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-          description: Calendar month echoed back from the request, formatted YYYY-MM.
-          example: "2026-05"
+          description: Calendar month echoed back from the request.
+          allOf:
+            - $ref: "#/components/schemas/Month"
         currency:
           description: ISO 4217 currency code echoed back from the request.
           allOf:
@@ -1083,10 +1090,9 @@ components:
       required: [ month, currency, income, expense, balance, incomeCount, expenseCount, excludedTransactionCount ]
       properties:
         month:
-          type: string
-          pattern: "^\\d{4}-(0[1-9]|1[0-2])$"
-          description: Calendar month this summary covers, formatted YYYY-MM.
-          example: "2026-05"
+          description: Calendar month this summary covers.
+          allOf:
+            - $ref: "#/components/schemas/Month"
         currency:
           description: ISO 4217 currency code echoed back from the request.
           allOf:
@@ -1217,17 +1223,10 @@ components:
           description: Preferred IANA timezone.
           allOf:
             - $ref: "#/components/schemas/Timezone"
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the preferences row was first created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the preferences row was last updated.
 
     UserPreferencesWrite:
       type: object
+      additionalProperties: false
       description: Full replacement of the user's global preferences (PUT semantics).
       required: [ language, currency, timezone ]
       properties:
@@ -1246,6 +1245,7 @@ components:
 
     UserPreferencesUpdate:
       type: object
+      additionalProperties: false
       description: Patch request — only provided fields are updated. At least one field must be provided.
       minProperties: 1
       properties:
@@ -1270,21 +1270,13 @@ components:
       required: [ id, preferences ]
       properties:
         id:
-          type: string
-          format: uuid
           description: The local Budget Buddy user UUID, derived from the OIDC subject on first login. Stable across sessions and used as the owner of all user-scoped resources.
+          allOf:
+            - $ref: "#/components/schemas/Uuid"
         preferences:
           description: The user's current global preferences (server defaults if none have been stored).
           allOf:
             - $ref: "#/components/schemas/UserPreferences"
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the local user record was first provisioned.
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the local user record was last updated.
 
     ClientSettings:
       type: object
@@ -1295,10 +1287,9 @@ components:
       required: [ clientId, settings ]
       properties:
         clientId:
-          type: string
           description: The client this settings row belongs to (matches the path parameter).
-          pattern: "^[a-z0-9-]{1,32}$"
-          example: web
+          allOf:
+            - $ref: "#/components/schemas/ClientId"
         settings:
           type: object
           description: Free-form JSON object owned by the client. The server stores and returns it as-is and does not validate its shape.
@@ -1306,17 +1297,10 @@ components:
           example:
             theme: dark
             fontSize: 14
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when this client settings row was first created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when this client settings row was last updated.
 
     ClientSettingsWrite:
       type: object
+      additionalProperties: false
       description: Body for upserting per-client settings (PUT semantics — fully replaces any existing settings for the client).
       required: [ settings ]
       properties:
