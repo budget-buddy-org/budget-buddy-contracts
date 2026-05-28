@@ -15,7 +15,7 @@ interfaceOnly: true
 useTags: true
 useSpringBoot4: true
 useJakartaEe: true
-openApiNullable: true
+openApiNullable: false
 skipOperationExample: true
 sourceFolder: src/main/java
 useJspecify: true

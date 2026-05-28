@@ -2,7 +2,29 @@ openapi: 3.1.0
 
 info:
   title: Budget Buddy API
-  description: REST API for Budget Buddy.
+  description: |
+    Personal-finance REST API for Budget Buddy. Resources are scoped to the authenticated user;
+    no cross-user access exists.
+
+    **Authentication.** Every endpoint requires an OIDC-issued JWT access token sent as
+    `Authorization: Bearer <jwt>`. There are no login or registration endpoints in this spec —
+    auth is handled out-of-band by the identity provider.
+
+    **Errors.** All non-2xx responses use `application/problem+json` (RFC 9457). 400 responses
+    caused by per-field validation populate `errors[]` with one `FieldError` per offending field;
+    other 4xx/5xx put the human-readable summary in `detail`.
+
+    **Money.** All amount fields are `integer` (`int64`) in **minor units** of the field's
+    `currency` (e.g. `1299` represents €12.99 when `currency` is `EUR`). Clients are responsible
+    for formatting against the locale.
+
+    **Pagination.** List endpoints use zero-based `page` (default 0) and `size` (default 20,
+    max 200) query parameters and return a `PaginationMeta` block with `page`, `size`, and
+    `total`. Beyond-last pages return an empty `items` array, not 404.
+
+    **Mutations.** The API is PUT-only — PATCH is intentionally not part of the contract. To
+    clear a nullable field, send `null` (or omit it) in the PUT body. To remove a resource,
+    use `DELETE`.
   version: "5.0.0"
   contact:
     name: Budget Buddy
@@ -30,7 +52,7 @@ paths:
     get:
       tags: [ categories ]
       summary: List categories
-      description: Returns a paginated list of categories for the authenticated user.
+      description: Returns a paginated list of categories for the authenticated user, ordered by name ascending.
       operationId: listCategories
       parameters:
         - $ref: "#/components/parameters/page"
@@ -81,7 +103,7 @@ paths:
   /v1/categories/summary:
     get:
       tags: [ categories ]
-      summary: Per-category spending summary
+      summary: Get per-category spending summary
       description: |
         Returns per-category spending and budget rollup for a single calendar month, in a single
         currency. Includes every category owned by the authenticated user (even with zero spending)
@@ -158,33 +180,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    patch:
-      tags: [ categories ]
-      summary: Partially update category
-      description: Partially updates a category; only provided fields are modified. Empty patch objects are invalid and return 400.
-      operationId: updateCategory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CategoryUpdate"
-      responses:
-        "200":
-          description: Updated category
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Category"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
     delete:
       tags: [ categories ]
       summary: Delete category
@@ -197,85 +192,6 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-  /v1/transactions/summary:
-    get:
-      tags: [ transactions ]
-      summary: Monthly income, expense, and balance summary
-      description: |
-        Returns monthly income, expense, and balance totals for a single calendar month, in a
-        single currency, scoped to the authenticated user.
-
-        Only transactions whose `currency` matches the requested currency contribute to `income`,
-        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
-        are reflected in `excludedTransactionCount` so the UI can surface an informational note.
-      operationId: getTransactionsSummary
-      parameters:
-        - $ref: "#/components/parameters/monthQuery"
-        - $ref: "#/components/parameters/currencyQuery"
-      responses:
-        "200":
-          description: Monthly summary for the requested month and currency
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MonthlySummary"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-  /v1/transactions/summary/trend:
-    get:
-      tags: [ transactions ]
-      summary: Monthly summary trend across a month range
-      description: |
-        Returns one `MonthlySummary` per calendar month across an inclusive range, in a single
-        currency, scoped to the authenticated user. Intended for sparkline / trend visualisations
-        that need per-month buckets in a single request.
-
-        Months in the range with no matching transactions are returned with zeroed totals, so
-        the response array length always equals the number of months between `from` and `to`
-        inclusive. Buckets are ordered oldest first.
-
-        Only transactions whose `currency` matches the requested currency contribute to `income`,
-        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
-        are reflected in `excludedTransactionCount`.
-
-        The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound
-        query cost.
-      operationId: getTransactionsSummaryTrend
-      parameters:
-        - name: from
-          in: query
-          required: true
-          description: First calendar month in the range (inclusive).
-          schema:
-            $ref: "#/components/schemas/Month"
-        - name: to
-          in: query
-          required: true
-          description: Last calendar month in the range (inclusive). Must be greater than or equal to `from`, and no more than 24 months after `from`.
-          schema:
-            $ref: "#/components/schemas/Month"
-        - $ref: "#/components/parameters/currencyQuery"
-      responses:
-        "200":
-          description: One `MonthlySummary` per calendar month in the requested range, oldest first.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MonthlySummary"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -382,6 +298,85 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /v1/transactions/summary:
+    get:
+      tags: [ transactions ]
+      summary: Get monthly income, expense, and balance summary
+      description: |
+        Returns monthly income, expense, and balance totals for a single calendar month, in a
+        single currency, scoped to the authenticated user.
+
+        Only transactions whose `currency` matches the requested currency contribute to `income`,
+        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
+        are reflected in `excludedTransactionCount` so the UI can surface an informational note.
+      operationId: getTransactionsSummary
+      parameters:
+        - $ref: "#/components/parameters/monthQuery"
+        - $ref: "#/components/parameters/currencyQuery"
+      responses:
+        "200":
+          description: Monthly summary for the requested month and currency
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlySummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /v1/transactions/summary/trend:
+    get:
+      tags: [ transactions ]
+      summary: Get monthly summary trend across a month range
+      description: |
+        Returns one `MonthlySummary` per calendar month across an inclusive range, in a single
+        currency, scoped to the authenticated user. Intended for sparkline / trend visualisations
+        that need per-month buckets in a single request.
+
+        Months in the range with no matching transactions are returned with zeroed totals, so
+        the response array length always equals the number of months between `from` and `to`
+        inclusive. Buckets are ordered oldest first.
+
+        Only transactions whose `currency` matches the requested currency contribute to `income`,
+        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
+        are reflected in `excludedTransactionCount`.
+
+        The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound
+        query cost.
+      operationId: getTransactionsSummaryTrend
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: First calendar month in the range (inclusive).
+          schema:
+            $ref: "#/components/schemas/Month"
+        - name: to
+          in: query
+          required: true
+          description: Last calendar month in the range (inclusive). Must be greater than or equal to `from`, and no more than 24 months after `from`.
+          schema:
+            $ref: "#/components/schemas/Month"
+        - $ref: "#/components/parameters/currencyQuery"
+      responses:
+        "200":
+          description: One `MonthlySummary` per calendar month in the requested range, oldest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlySummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /v1/transactions/{transactionId}:
     parameters:
       - $ref: "#/components/parameters/transactionId"
@@ -419,33 +414,6 @@ paths:
       responses:
         "200":
           description: Replaced transaction
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Transaction"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-    patch:
-      tags: [ transactions ]
-      summary: Partially update transaction
-      description: Partially updates a transaction; only provided fields are modified. Empty patch objects are invalid and return 400.
-      operationId: updateTransaction
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TransactionUpdate"
-      responses:
-        "200":
-          description: Updated transaction
           content:
             application/json:
               schema:
@@ -585,33 +553,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    patch:
-      tags: [ users ]
-      summary: Partially update current user's preferences
-      description: |
-        Partially updates the authenticated user's global preferences; only fields included in the
-        request body are modified. Empty patch objects are invalid and return 400.
-      operationId: updateCurrentUserPreferences
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserPreferencesUpdate"
-      responses:
-        "200":
-          description: Updated preferences
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserPreferences"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
   /v1/users/me/settings:
     get:
       tags: [ users ]
@@ -667,7 +608,7 @@ paths:
       description: |
         Stores (or replaces) the authenticated user's settings for a single client. The body is an
         opaque JSON object owned by the client app — the server does not validate its shape.
-      operationId: replaceCurrentUserClientSettings
+      operationId: upsertCurrentUserClientSettings
       requestBody:
         required: true
         content:
@@ -808,7 +749,7 @@ components:
   schemas:
     Category:
       type: object
-      required: [ id, name, monthlyBudget ]
+      required: [ id, name ]
       properties:
         id:
           description: Unique identifier for the category.
@@ -830,7 +771,7 @@ components:
     CategoryWrite:
       type: object
       additionalProperties: false
-      required: [ name, monthlyBudget ]
+      required: [ name ]
       properties:
         name:
           type: string
@@ -842,27 +783,8 @@ components:
           type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Monthly spending budget for this category, in minor units. Pass null to clear the budget.
+          description: Monthly spending budget for this category, in minor units. Send null (or omit) to clear any existing budget.
           example: 50000
-
-    CategoryUpdate:
-      type: object
-      additionalProperties: false
-      description: Patch request — only provided fields are updated. At least one field must be provided.
-      minProperties: 1
-      properties:
-        name:
-          type: string
-          description: New human-readable name for the category (1–255 characters).
-          minLength: 1
-          maxLength: 255
-          example: Dining
-        monthlyBudget:
-          type: [ integer, "null" ]
-          format: int64
-          minimum: 0
-          description: New monthly budget in minor units. Pass null to clear the budget.
-          example: 75000
 
     Uuid:
       type: string
@@ -900,7 +822,7 @@ components:
 
     Transaction:
       type: object
-      required: [ id, categoryId, amount, type, currency, date, description ]
+      required: [ id, categoryId, amount, type, currency, date ]
       properties:
         id:
           description: Unique identifier for the transaction.
@@ -939,7 +861,7 @@ components:
     TransactionWrite:
       type: object
       additionalProperties: false
-      required: [ categoryId, amount, type, currency, date, description ]
+      required: [ categoryId, amount, type, currency, date ]
       properties:
         categoryId:
           description: UUID of the category this transaction belongs to.
@@ -963,44 +885,13 @@ components:
           type: string
           format: date
           description: Date on which the transaction occurred (YYYY-MM-DD).
+          example: 2026-03-08
         description:
           type: [ string, "null" ]
-          description: Free-text note for the transaction (1–255 characters). Pass null to clear the note.
+          description: Free-text note for the transaction (1–255 characters). Send null (or omit) to clear any existing note.
           minLength: 1
           maxLength: 255
-
-    TransactionUpdate:
-      type: object
-      additionalProperties: false
-      description: Patch request — only provided fields are updated. At least one field must be provided.
-      minProperties: 1
-      properties:
-        categoryId:
-          description: UUID of the category to reassign this transaction to.
-          allOf:
-            - $ref: "#/components/schemas/Uuid"
-        amount:
-          type: integer
-          format: int64
-          description: New amount in minor units. Must be at least 1.
-          minimum: 1
-        type:
-          description: New transaction type.
-          allOf:
-            - $ref: "#/components/schemas/TransactionType"
-        currency:
-          description: New ISO 4217 three-letter currency code.
-          allOf:
-            - $ref: "#/components/schemas/Currency"
-        date:
-          type: string
-          format: date
-          description: New transaction date (YYYY-MM-DD).
-        description:
-          type: [ string, "null" ]
-          description: Updated free-text note (1–255 characters). Pass null to clear the note.
-          minLength: 1
-          maxLength: 255
+          example: Coffee
 
     PaginationMeta:
       type: object
@@ -1033,7 +924,7 @@ components:
 
     CategorySpendingRow:
       type: object
-      required: [ categoryId, categoryName, monthlyBudget, spent, transactionCount, excludedTransactionCount ]
+      required: [ categoryId, categoryName, spent, transactionCount, excludedTransactionCount ]
       properties:
         categoryId:
           description: UUID of the category this row summarises.
@@ -1044,6 +935,7 @@ components:
           description: Human-readable name of the category at the time of the response (1–255 characters).
           minLength: 1
           maxLength: 255
+          example: Groceries
         monthlyBudget:
           type: [ integer, "null" ]
           format: int64
@@ -1241,25 +1133,6 @@ components:
             - $ref: "#/components/schemas/Currency"
         timezone:
           description: Preferred IANA timezone.
-          allOf:
-            - $ref: "#/components/schemas/Timezone"
-
-    UserPreferencesUpdate:
-      type: object
-      additionalProperties: false
-      description: Patch request — only provided fields are updated. At least one field must be provided.
-      minProperties: 1
-      properties:
-        language:
-          description: New preferred language as a BCP 47 tag.
-          allOf:
-            - $ref: "#/components/schemas/Language"
-        currency:
-          description: New preferred currency as an ISO 4217 three-letter code.
-          allOf:
-            - $ref: "#/components/schemas/Currency"
-        timezone:
-          description: New preferred IANA timezone.
           allOf:
             - $ref: "#/components/schemas/Timezone"
 

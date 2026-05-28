@@ -90,12 +90,23 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - All schema properties have a `description` field (enforced by Spectral)
 - All API tags have a `description` field (enforced by Spectral)
 - Error responses use `application/problem+json` with the `Problem` schema (RFC 9457)
-- Amounts are `integer` with `format: int64` in minor currency units (e.g. `1299` = €12.99); applies to all amount fields across read, write, and update schemas
+- Amounts are `integer` with `format: int64` in minor currency units (e.g. `1299` = €12.99); applies to all amount fields across read and write schemas
 - Currency codes are `string` with `minLength: 3` and `maxLength: 3` (ISO 4217)
-- Free-text note fields (`description`) are bounded with `maxLength: 255` across all schemas; nullable update variants (`type: [string, "null"]`) carry the same bound
-- Write schemas (POST/PUT body) and Update schemas (PATCH body) are separate from read schemas
-- PATCH schemas represent partial updates: fields are optional, and empty patch objects are invalid
+- Free-text note fields (`description`) are bounded with `maxLength: 255` across all schemas
+- Write schemas (POST/PUT body) are separate from read schemas; PATCH is intentionally not supported (see "PATCH policy" below)
+- **Clearable fields** (e.g. `monthlyBudget`, `description`) are modeled as `type: [..., "null"]` and left out of `required` — on both read and write schemas. Write side: clients clear the value by sending `null` in the PUT body (omitting also works but `null` is the documented signal). Read side: the server always emits the field with `null` when unset, so the spec is a forward-compatible superset of actual behavior. **Do not** combine `required` with a nullable type: on write schemas it triggers an `@NotNull`-on-nullable bug in the Java generator (upstream PR [openapi-generator#14766](https://github.com/OpenAPITools/openapi-generator/pull/14766) is still open); on read schemas the generator's `useJspecify` does not add `@Nullable` to required getters, so the Java type lies about non-nullability and breaks static analysis
+- Generator config: `openApiNullable: false` so the Java client uses plain types instead of `JsonNullable<T>` wrappers. With `required: false`, Jackson maps absent and `null` to the same field value, which matches the PUT-only "clear with null" semantic above — no template overrides, no app-side workarounds
 - List endpoints (`GET /v1/categories`, `GET /v1/transactions`) use `page` (zero-based, min 0, default 0) and `size` (min 1, max 200, default 20) query parameters; `PaginationMeta` returns `page`, `size`, and `total`
 - `GET /v1/transactions` additionally supports filtering by `query` (case-insensitive partial match across description and category name, `maxLength: 255`), `amountMin` / `amountMax` (inclusive range in minor units, `int64`, `minimum: 1` — set min equal to max for an exact match), `categoryId`, `start`/`end` (date range), `type`, and `sort` (`asc`/`desc`, default `desc`); all filters combine with AND semantics
 - Authentication is handled externally by Zitadel (OIDC); no auth endpoints exist in this spec — all endpoints require `BearerAuth` (Zitadel-issued JWTs)
 - When adding a `description` alongside a `$ref`, use `allOf` wrapping: `allOf: [{$ref: ...}]` with `description` as a sibling — avoids Spectral false positives with bare `$ref` + `description`
+
+## PATCH policy
+
+The API is **PUT-only** for mutations. PATCH is intentionally not part of the contract.
+
+- All mutable resources are small and flat (Category: 2 fields, Transaction: 6, UserPreferences: 3); clients already hold the full resource in memory on edit screens, so resending it is cheap.
+- PATCH (JSON Merge Patch, RFC 7396) needs to distinguish "field absent" (don't touch) from "field present and null" (clear). Expressing that cleanly in generated Java requires `JsonNullable<T>` wrappers on every nullable field, which leaks into every consumer's call sites for vanishing value.
+- PUT-only with the "clearable = optional, non-nullable" convention above lets every generator emit plain types and standard Bean Validation, with no overrides anywhere.
+
+If a future endpoint genuinely needs partial updates (e.g. a large user-profile resource), introduce PATCH for that single resource — don't re-enable it globally.
