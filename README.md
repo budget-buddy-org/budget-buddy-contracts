@@ -5,6 +5,9 @@
 [![GitHub Release](https://img.shields.io/github/v/release/budget-buddy-org/budget-buddy-contracts)](https://github.com/budget-buddy-org/budget-buddy-contracts/releases)
 [![npm](https://img.shields.io/badge/npm-GPR-blue.svg?logo=npm)](https://github.com/budget-buddy-org/budget-buddy-contracts/pkgs/npm/budget-buddy-contracts)
 [![Maven](https://img.shields.io/badge/maven-GPR-blue.svg?logo=apachemaven)](https://github.com/budget-buddy-org/budget-buddy-contracts/packages/2953418)
+[![API Docs](https://img.shields.io/badge/docs-Swagger%20UI-85ea2d.svg?logo=swagger)](https://budget-buddy-org.github.io/budget-buddy-contracts/)
+
+📖 **Interactive API reference:** <https://budget-buddy-org.github.io/budget-buddy-contracts/>
 
 This repository serves as the **Single Source of Truth** for the Budget Buddy ecosystem. We use a "Contract-First" approach, where the API is defined in OpenAPI 3.1 and then used to generate strongly-typed clients and server interfaces for all supported platforms.
 
