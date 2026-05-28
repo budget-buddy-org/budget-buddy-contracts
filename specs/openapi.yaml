@@ -52,7 +52,7 @@ paths:
     get:
       tags: [ categories ]
       summary: List categories
-      description: Returns a paginated list of categories for the authenticated user.
+      description: Returns a paginated list of categories for the authenticated user, ordered by name ascending.
       operationId: listCategories
       parameters:
         - $ref: "#/components/parameters/page"
@@ -103,7 +103,7 @@ paths:
   /v1/categories/summary:
     get:
       tags: [ categories ]
-      summary: Per-category spending summary
+      summary: Get per-category spending summary
       description: |
         Returns per-category spending and budget rollup for a single calendar month, in a single
         currency. Includes every category owned by the authenticated user (even with zero spending)
@@ -301,7 +301,7 @@ paths:
   /v1/transactions/summary:
     get:
       tags: [ transactions ]
-      summary: Monthly income, expense, and balance summary
+      summary: Get monthly income, expense, and balance summary
       description: |
         Returns monthly income, expense, and balance totals for a single calendar month, in a
         single currency, scoped to the authenticated user.
@@ -330,7 +330,7 @@ paths:
   /v1/transactions/summary/trend:
     get:
       tags: [ transactions ]
-      summary: Monthly summary trend across a month range
+      summary: Get monthly summary trend across a month range
       description: |
         Returns one `MonthlySummary` per calendar month across an inclusive range, in a single
         currency, scoped to the authenticated user. Intended for sparkline / trend visualisations
@@ -608,7 +608,7 @@ paths:
       description: |
         Stores (or replaces) the authenticated user's settings for a single client. The body is an
         opaque JSON object owned by the client app — the server does not validate its shape.
-      operationId: replaceCurrentUserClientSettings
+      operationId: upsertCurrentUserClientSettings
       requestBody:
         required: true
         content:
@@ -885,11 +885,13 @@ components:
           type: string
           format: date
           description: Date on which the transaction occurred (YYYY-MM-DD).
+          example: 2026-03-08
         description:
           type: [ string, "null" ]
           description: Free-text note for the transaction (1–255 characters). Send null (or omit) to clear any existing note.
           minLength: 1
           maxLength: 255
+          example: Coffee
 
     PaginationMeta:
       type: object
@@ -933,6 +935,7 @@ components:
           description: Human-readable name of the category at the time of the response (1–255 characters).
           minLength: 1
           maxLength: 255
+          example: Groceries
         monthlyBudget:
           type: [ integer, "null" ]
           format: int64
