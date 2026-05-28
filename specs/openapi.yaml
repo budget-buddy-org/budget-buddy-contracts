@@ -10,9 +10,9 @@ info:
 
 servers:
   - url: https://budgetbuddy.glebremniov.keenetic.link
-    description: Production (self-hosted on Raspberry Pi behind nginx).
+    description: Production.
   - url: http://localhost:8080
-    description: Local development (`./gradlew bootRun --args='--spring.profiles.active=dev'`).
+    description: Local development.
 
 tags:
   - name: categories
@@ -134,7 +134,7 @@ paths:
     put:
       tags: [ categories ]
       summary: Replace category
-      description: Fully replaces a category's data (PUT semantics).
+      description: Fully replaces a category's data.
       operationId: replaceCategory
       requestBody:
         required: true
@@ -408,7 +408,7 @@ paths:
     put:
       tags: [ transactions ]
       summary: Replace transaction
-      description: Fully replaces a transaction's data (PUT semantics).
+      description: Fully replaces a transaction's data.
       operationId: replaceTransaction
       requestBody:
         required: true
@@ -842,7 +842,7 @@ components:
           type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Monthly spending budget for this category, in minor units. Pass null for no budget.
+          description: Monthly spending budget for this category, in minor units. Pass null to clear the budget.
           example: 50000
 
     CategoryUpdate:
@@ -861,7 +861,7 @@ components:
           type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: New monthly budget in minor units. Pass null to clear an existing budget.
+          description: New monthly budget in minor units. Pass null to clear the budget.
           example: 75000
 
     Uuid:
@@ -965,7 +965,7 @@ components:
           description: Date on which the transaction occurred (YYYY-MM-DD).
         description:
           type: [ string, "null" ]
-          description: Free-text note for the transaction (1–255 characters). Pass null for no note.
+          description: Free-text note for the transaction (1–255 characters). Pass null to clear the note.
           minLength: 1
           maxLength: 255
 
@@ -998,7 +998,7 @@ components:
           description: New transaction date (YYYY-MM-DD).
         description:
           type: [ string, "null" ]
-          description: Updated free-text note (1–255 characters). Pass null to clear the existing note.
+          description: Updated free-text note (1–255 characters). Pass null to clear the note.
           minLength: 1
           maxLength: 255
 
@@ -1169,12 +1169,13 @@ components:
           description: URI reference identifying the specific occurrence of the problem.
         errors:
           type: array
-          description: Optional list of specific errors (e.g., field-level validation errors).
+          description: Field-level validation errors. Present on 400 responses caused by per-field validation; omitted otherwise.
           items:
             $ref: "#/components/schemas/FieldError"
 
     FieldError:
       type: object
+      additionalProperties: false
       required: [ field, message ]
       properties:
         field:
@@ -1227,7 +1228,7 @@ components:
     UserPreferencesWrite:
       type: object
       additionalProperties: false
-      description: Full replacement of the user's global preferences (PUT semantics).
+      description: Full replacement of the user's global preferences.
       required: [ language, currency, timezone ]
       properties:
         language:
@@ -1270,7 +1271,7 @@ components:
       required: [ id, preferences ]
       properties:
         id:
-          description: The local Budget Buddy user UUID, derived from the OIDC subject on first login. Stable across sessions and used as the owner of all user-scoped resources.
+          description: Stable identifier for the authenticated user. Used as the owner of all user-scoped resources and unchanged across sessions.
           allOf:
             - $ref: "#/components/schemas/Uuid"
         preferences:
@@ -1278,12 +1279,21 @@ components:
           allOf:
             - $ref: "#/components/schemas/UserPreferences"
 
+    ClientSettingsPayload:
+      type: object
+      description: |
+        Free-form JSON object owned by the client app. The server stores and returns it as-is and
+        does not validate its shape — clients own the schema.
+      additionalProperties: true
+      example:
+        theme: dark
+        fontSize: 14
+
     ClientSettings:
       type: object
       description: |
         Per-client UI/UX settings (themes, font sizes, layout preferences, etc.) for a single client
-        of the authenticated user. The `settings` payload is opaque to the server — clients own its
-        schema.
+        of the authenticated user.
       required: [ clientId, settings ]
       properties:
         clientId:
@@ -1291,23 +1301,17 @@ components:
           allOf:
             - $ref: "#/components/schemas/ClientId"
         settings:
-          type: object
-          description: Free-form JSON object owned by the client. The server stores and returns it as-is and does not validate its shape.
-          additionalProperties: true
-          example:
-            theme: dark
-            fontSize: 14
+          description: The stored settings payload.
+          allOf:
+            - $ref: "#/components/schemas/ClientSettingsPayload"
 
     ClientSettingsWrite:
       type: object
       additionalProperties: false
-      description: Body for upserting per-client settings (PUT semantics — fully replaces any existing settings for the client).
+      description: Upsert body — fully replaces any existing settings for the client.
       required: [ settings ]
       properties:
         settings:
-          type: object
-          description: Free-form JSON object owned by the client. Stored and returned as-is.
-          additionalProperties: true
-          example:
-            theme: dark
-            fontSize: 14
+          description: The settings payload to store.
+          allOf:
+            - $ref: "#/components/schemas/ClientSettingsPayload"
