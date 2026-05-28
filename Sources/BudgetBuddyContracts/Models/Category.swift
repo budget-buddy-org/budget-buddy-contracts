@@ -18,7 +18,7 @@ public struct Category: Sendable, Codable, Hashable {
     /** Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Null when no budget is set. */
     public var monthlyBudget: Int64?
 
-    public init(id: UUID, name: String, monthlyBudget: Int64?) {
+    public init(id: UUID, name: String, monthlyBudget: Int64? = nil) {
         self.id = id
         self.name = name
         self.monthlyBudget = monthlyBudget
@@ -36,7 +36,7 @@ public struct Category: Sendable, Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
-        try container.encode(monthlyBudget, forKey: .monthlyBudget)
+        try container.encodeIfPresent(monthlyBudget, forKey: .monthlyBudget)
     }
 }
 

@@ -137,7 +137,7 @@ open class TransactionsAPI {
     }
 
     /**
-     Monthly income, expense, and balance summary
+     Get monthly income, expense, and balance summary
      
      - parameter month: (query) Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC. 
      - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
@@ -149,7 +149,7 @@ open class TransactionsAPI {
     }
 
     /**
-     Monthly income, expense, and balance summary
+     Get monthly income, expense, and balance summary
      - GET /v1/transactions/summary
      - Returns monthly income, expense, and balance totals for a single calendar month, in a single currency, scoped to the authenticated user.  Only transactions whose `currency` matches the requested currency contribute to `income`, `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies are reflected in `excludedTransactionCount` so the UI can surface an informational note. 
      - Bearer Token:
@@ -183,7 +183,7 @@ open class TransactionsAPI {
     }
 
     /**
-     Monthly summary trend across a month range
+     Get monthly summary trend across a month range
      
      - parameter from: (query) First calendar month in the range (inclusive). 
      - parameter to: (query) Last calendar month in the range (inclusive). Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
@@ -196,7 +196,7 @@ open class TransactionsAPI {
     }
 
     /**
-     Monthly summary trend across a month range
+     Get monthly summary trend across a month range
      - GET /v1/transactions/summary/trend
      - Returns one `MonthlySummary` per calendar month across an inclusive range, in a single currency, scoped to the authenticated user. Intended for sparkline / trend visualisations that need per-month buckets in a single request.  Months in the range with no matching transactions are returned with zeroed totals, so the response array length always equals the number of months between `from` and `to` inclusive. Buckets are ordered oldest first.  Only transactions whose `currency` matches the requested currency contribute to `income`, `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies are reflected in `excludedTransactionCount`.  The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound query cost. 
      - Bearer Token:
@@ -352,50 +352,5 @@ open class TransactionsAPI {
         let localVariableRequestBuilder: RequestBuilder<Transaction>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
 
         return localVariableRequestBuilder.init(method: "PUT", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
-    }
-
-    /**
-     Partially update transaction
-     
-     - parameter transactionId: (path) Transaction UUID. 
-     - parameter transactionUpdate: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: Transaction
-     */
-    open class func updateTransaction(transactionId: UUID, transactionUpdate: TransactionUpdate, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> Transaction {
-        return try await updateTransactionWithRequestBuilder(transactionId: transactionId, transactionUpdate: transactionUpdate, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     Partially update transaction
-     - PATCH /v1/transactions/{transactionId}
-     - Partially updates a transaction; only provided fields are modified. Empty patch objects are invalid and return 400.
-     - Bearer Token:
-       - type: http
-       - name: BearerAuth
-     - parameter transactionId: (path) Transaction UUID. 
-     - parameter transactionUpdate: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<Transaction> 
-     */
-    open class func updateTransactionWithRequestBuilder(transactionId: UUID, transactionUpdate: TransactionUpdate, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Transaction> {
-        var localVariablePath = "/v1/transactions/{transactionId}"
-        let transactionIdPreEscape = "\(APIHelper.mapValueToPathItem(transactionId))"
-        let transactionIdPostEscape = transactionIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        localVariablePath = localVariablePath.replacingOccurrences(of: "{transactionId}", with: transactionIdPostEscape, options: .literal, range: nil)
-        let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: transactionUpdate, codableHelper: apiConfiguration.codableHelper)
-
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
-
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
-
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<Transaction>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "PATCH", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 }

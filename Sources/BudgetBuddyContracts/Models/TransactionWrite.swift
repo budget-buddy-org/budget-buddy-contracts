@@ -22,10 +22,10 @@ public struct TransactionWrite: Sendable, Codable, Hashable {
     public var currency: String
     /** Date on which the transaction occurred (YYYY-MM-DD). */
     public var date: Date
-    /** Free-text note for the transaction (1–255 characters). Pass null to clear the note. */
+    /** Free-text note for the transaction (1–255 characters). Send null (or omit) to clear any existing note. */
     public var description: String?
 
-    public init(categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String?) {
+    public init(categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String? = nil) {
         self.categoryId = categoryId
         self.amount = amount
         self.type = type
@@ -52,7 +52,7 @@ public struct TransactionWrite: Sendable, Codable, Hashable {
         try container.encode(type, forKey: .type)
         try container.encode(currency, forKey: .currency)
         try container.encode(date, forKey: .date)
-        try container.encode(description, forKey: .description)
+        try container.encodeIfPresent(description, forKey: .description)
     }
 }
 

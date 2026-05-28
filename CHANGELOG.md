@@ -1,3 +1,100 @@
+## [6.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v5.0.0...v6.0.0) (2026-05-28)
+
+### ⚠ BREAKING CHANGES
+
+* PATCH endpoints removed. Clients must use PUT with the
+full resource body; send `null` for nullable fields to clear them.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* refactor: clear via field omission instead of explicit null
+
+Replaces the local Mustache template override with a schema-level fix
+that uses only out-of-the-box openapi-generator behavior.
+
+monthlyBudget and description (on Category, Transaction, CategorySpendingRow,
+and their *Write counterparts) are no longer marked `required` and no longer
+typed as `nullable`. Clients clear these fields by omitting them from the
+PUT body; the server treats absence and the previous explicit-null as the
+same state. This sidesteps the openapi-generator behavior where required +
+nullable getters end up with @NotNull on a spec-legal null payload.
+
+- Removed config/spring-server.yaml `templateDir`
+- Removed templates/JavaSpring/beanValidation.mustache
+- Updated CLAUDE.md: documented "optional clearable" convention, removed
+  template override from Architecture, simplified PATCH-policy rationale
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* fix(spec): restore type: [..., null] on clearable fields
+
+The previous commit dropped `nullable` to avoid the @NotNull-on-nullable
+generator bug, but that left the spec lying about runtime behavior — the
+server still accepts JSON `null` for these fields even though the schema
+declared them strictly typed. That's contract drift.
+
+Dropping `required` alone is enough to dodge the generator bug; `nullable`
+can stay. The combination `nullable: true, required: false` is the
+industry-conventional shape for "clearable" fields (Stripe, GitHub, MS
+REST guidelines) and is what the runtime actually accepts.
+
+- monthlyBudget on Category, CategoryWrite, CategorySpendingRow: back to
+  `type: [integer, "null"]`
+- description on Transaction, TransactionWrite: back to
+  `type: [string, "null"]`
+- Field docs now say "Send null (or omit) to clear any existing X"
+- Read schemas emit the field with `null` when unset, so clients
+  deserialize one shape (always-present), not two
+- CLAUDE.md convention bullet rewritten to call out the
+  required-AND-nullable combo as the antipattern, not nullable itself
+
+Generated Java output is unchanged versus the previous commit (still
+`@Nullable Long` / `@Nullable String`, no `@NotNull`, `@Min`/`@Size`
+preserved). The only change is that the spec is now honest about what
+the server accepts.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* chore(spec): consistency polish
+
+- Reorder transaction paths to match categories: collection first, then
+  /summary and /summary/trend, then the by-id route. Spec ordering matches
+  /v1/categories now.
+- Enrich info.description with a self-contained primer (auth, error
+  format, money representation, pagination, mutation semantics) so anyone
+  reading the generated docs doesn't have to cross-reference five pages.
+- Document the "clearable field" rule (and the two distinct generator
+  quirks that motivate it) in CLAUDE.md so future contributors don't
+  re-introduce required+nullable on either read or write schemas.
+
+No client-visible schema or operation changes versus the previous commit.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* chore(spec): final consistency polish
+
+- Summary endpoints (/v1/categories/summary, /v1/transactions/summary,
+  /v1/transactions/summary/trend) now use imperative `Get …` titles,
+  matching every other GET operation in the spec.
+- Add `example` values to TransactionWrite.date, TransactionWrite.description,
+  and CategorySpendingRow.categoryName — read-side counterparts already had
+  them, the write/derived schemas were missing.
+- Document the implicit sort order on `GET /v1/categories` (by name asc) so
+  clients don't have to rely on undocumented behavior.
+- Rename `replaceCurrentUserClientSettings` → `upsertCurrentUserClientSettings`.
+  The operation creates the resource when absent and replaces it when
+  present; the operationId now matches the documented semantic, and the
+  generated SDK method name reads correctly. Breaking for SDK consumers,
+  but the PR is already feat! so the cost is bundled into the v6.0.0
+  migration that consumers will have to do anyway.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+### Features
+
+* drop PATCH endpoints and switch off openApiNullable ([#113](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/113)) ([0325643](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/032564327caac6e1ace53f0bc828421c00142d3e)), closes [#14766](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/14766) [openapi-generator#14766](https://github.com/budget-buddy-org/openapi-generator/issues/14766)
+* publish interactive Swagger UI to GitHub Pages ([#114](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/114)) ([eda637a](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/eda637a8ed825f6c5da39b04d56de30c5ae11d3e))
+
 ## [5.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v4.1.0...v5.0.0) (2026-05-28)
 
 ### ⚠ BREAKING CHANGES

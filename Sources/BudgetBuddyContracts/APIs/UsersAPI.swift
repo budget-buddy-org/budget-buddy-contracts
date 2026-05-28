@@ -286,51 +286,6 @@ open class UsersAPI {
     }
 
     /**
-     Upsert per-client settings
-     
-     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
-     - parameter clientSettingsWrite: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: ClientSettings
-     */
-    open class func replaceCurrentUserClientSettings(clientId: String, clientSettingsWrite: ClientSettingsWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> ClientSettings {
-        return try await replaceCurrentUserClientSettingsWithRequestBuilder(clientId: clientId, clientSettingsWrite: clientSettingsWrite, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     Upsert per-client settings
-     - PUT /v1/users/me/settings/{clientId}
-     - Stores (or replaces) the authenticated user's settings for a single client. The body is an opaque JSON object owned by the client app — the server does not validate its shape. 
-     - Bearer Token:
-       - type: http
-       - name: BearerAuth
-     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
-     - parameter clientSettingsWrite: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<ClientSettings> 
-     */
-    open class func replaceCurrentUserClientSettingsWithRequestBuilder(clientId: String, clientSettingsWrite: ClientSettingsWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<ClientSettings> {
-        var localVariablePath = "/v1/users/me/settings/{clientId}"
-        let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
-        let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        localVariablePath = localVariablePath.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: clientSettingsWrite, codableHelper: apiConfiguration.codableHelper)
-
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
-
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
-
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<ClientSettings>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "PUT", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
-    }
-
-    /**
      Replace current user's preferences
      
      - parameter userPreferencesWrite: (body)  
@@ -371,31 +326,36 @@ open class UsersAPI {
     }
 
     /**
-     Partially update current user's preferences
+     Upsert per-client settings
      
-     - parameter userPreferencesUpdate: (body)  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
+     - parameter clientSettingsWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
-     - returns: UserPreferences
+     - returns: ClientSettings
      */
-    open class func updateCurrentUserPreferences(userPreferencesUpdate: UserPreferencesUpdate, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> UserPreferences {
-        return try await updateCurrentUserPreferencesWithRequestBuilder(userPreferencesUpdate: userPreferencesUpdate, apiConfiguration: apiConfiguration).execute().body
+    open class func upsertCurrentUserClientSettings(clientId: String, clientSettingsWrite: ClientSettingsWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> ClientSettings {
+        return try await upsertCurrentUserClientSettingsWithRequestBuilder(clientId: clientId, clientSettingsWrite: clientSettingsWrite, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     Partially update current user's preferences
-     - PATCH /v1/users/me/preferences
-     - Partially updates the authenticated user's global preferences; only fields included in the request body are modified. Empty patch objects are invalid and return 400. 
+     Upsert per-client settings
+     - PUT /v1/users/me/settings/{clientId}
+     - Stores (or replaces) the authenticated user's settings for a single client. The body is an opaque JSON object owned by the client app — the server does not validate its shape. 
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter userPreferencesUpdate: (body)  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
+     - parameter clientSettingsWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<UserPreferences> 
+     - returns: RequestBuilder<ClientSettings> 
      */
-    open class func updateCurrentUserPreferencesWithRequestBuilder(userPreferencesUpdate: UserPreferencesUpdate, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<UserPreferences> {
-        let localVariablePath = "/v1/users/me/preferences"
+    open class func upsertCurrentUserClientSettingsWithRequestBuilder(clientId: String, clientSettingsWrite: ClientSettingsWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<ClientSettings> {
+        var localVariablePath = "/v1/users/me/settings/{clientId}"
+        let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
+        let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        localVariablePath = localVariablePath.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userPreferencesUpdate, codableHelper: apiConfiguration.codableHelper)
+        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: clientSettingsWrite, codableHelper: apiConfiguration.codableHelper)
 
         let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
@@ -405,8 +365,8 @@ open class UsersAPI {
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-        let localVariableRequestBuilder: RequestBuilder<UserPreferences>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+        let localVariableRequestBuilder: RequestBuilder<ClientSettings>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
 
-        return localVariableRequestBuilder.init(method: "PATCH", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+        return localVariableRequestBuilder.init(method: "PUT", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 }

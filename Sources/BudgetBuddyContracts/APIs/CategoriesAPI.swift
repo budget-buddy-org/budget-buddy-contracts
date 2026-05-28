@@ -94,7 +94,7 @@ open class CategoriesAPI {
     }
 
     /**
-     Per-category spending summary
+     Get per-category spending summary
      
      - parameter month: (query) Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC. 
      - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
@@ -106,7 +106,7 @@ open class CategoriesAPI {
     }
 
     /**
-     Per-category spending summary
+     Get per-category spending summary
      - GET /v1/categories/summary
      - Returns per-category spending and budget rollup for a single calendar month, in a single currency. Includes every category owned by the authenticated user (even with zero spending) so dashboards can render budgets at 0% used without a second request.  Only `EXPENSE` transactions whose `currency` matches the requested currency contribute to `spent` and `transactionCount`. Transactions in other currencies are reflected in `excludedTransactionCount` so the UI can surface an informational note. 
      - Bearer Token:
@@ -197,7 +197,7 @@ open class CategoriesAPI {
     /**
      List categories
      - GET /v1/categories
-     - Returns a paginated list of categories for the authenticated user.
+     - Returns a paginated list of categories for the authenticated user, ordered by name ascending.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -271,50 +271,5 @@ open class CategoriesAPI {
         let localVariableRequestBuilder: RequestBuilder<Category>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
 
         return localVariableRequestBuilder.init(method: "PUT", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
-    }
-
-    /**
-     Partially update category
-     
-     - parameter categoryId: (path) Category UUID. 
-     - parameter categoryUpdate: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: Category
-     */
-    open class func updateCategory(categoryId: UUID, categoryUpdate: CategoryUpdate, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> Category {
-        return try await updateCategoryWithRequestBuilder(categoryId: categoryId, categoryUpdate: categoryUpdate, apiConfiguration: apiConfiguration).execute().body
-    }
-
-    /**
-     Partially update category
-     - PATCH /v1/categories/{categoryId}
-     - Partially updates a category; only provided fields are modified. Empty patch objects are invalid and return 400.
-     - Bearer Token:
-       - type: http
-       - name: BearerAuth
-     - parameter categoryId: (path) Category UUID. 
-     - parameter categoryUpdate: (body)  
-     - parameter apiConfiguration: The configuration for the http request.
-     - returns: RequestBuilder<Category> 
-     */
-    open class func updateCategoryWithRequestBuilder(categoryId: UUID, categoryUpdate: CategoryUpdate, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Category> {
-        var localVariablePath = "/v1/categories/{categoryId}"
-        let categoryIdPreEscape = "\(APIHelper.mapValueToPathItem(categoryId))"
-        let categoryIdPostEscape = categoryIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        localVariablePath = localVariablePath.replacingOccurrences(of: "{categoryId}", with: categoryIdPostEscape, options: .literal, range: nil)
-        let localVariableURLString = apiConfiguration.basePath + localVariablePath
-        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: categoryUpdate, codableHelper: apiConfiguration.codableHelper)
-
-        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
-
-        let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            "Content-Type": "application/json",
-        ]
-
-        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
-
-        let localVariableRequestBuilder: RequestBuilder<Category>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
-
-        return localVariableRequestBuilder.init(method: "PATCH", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
     }
 }

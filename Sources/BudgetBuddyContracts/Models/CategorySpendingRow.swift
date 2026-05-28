@@ -27,7 +27,7 @@ public struct CategorySpendingRow: Sendable, Codable, Hashable {
     /** Number of EXPENSE transactions in this month for this category whose currency did not match the requested currency and were therefore not summed. */
     public var excludedTransactionCount: Int
 
-    public init(categoryId: UUID, categoryName: String, monthlyBudget: Int64?, spent: Int64, transactionCount: Int, excludedTransactionCount: Int) {
+    public init(categoryId: UUID, categoryName: String, monthlyBudget: Int64? = nil, spent: Int64, transactionCount: Int, excludedTransactionCount: Int) {
         self.categoryId = categoryId
         self.categoryName = categoryName
         self.monthlyBudget = monthlyBudget
@@ -51,7 +51,7 @@ public struct CategorySpendingRow: Sendable, Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(categoryId, forKey: .categoryId)
         try container.encode(categoryName, forKey: .categoryName)
-        try container.encode(monthlyBudget, forKey: .monthlyBudget)
+        try container.encodeIfPresent(monthlyBudget, forKey: .monthlyBudget)
         try container.encode(spent, forKey: .spent)
         try container.encode(transactionCount, forKey: .transactionCount)
         try container.encode(excludedTransactionCount, forKey: .excludedTransactionCount)

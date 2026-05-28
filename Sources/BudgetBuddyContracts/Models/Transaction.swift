@@ -27,7 +27,7 @@ public struct Transaction: Sendable, Codable, Hashable {
     /** Free-text note for the transaction (1–255 characters). Null when no note is set. */
     public var description: String?
 
-    public init(id: UUID, categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String?) {
+    public init(id: UUID, categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String? = nil) {
         self.id = id
         self.categoryId = categoryId
         self.amount = amount
@@ -57,7 +57,7 @@ public struct Transaction: Sendable, Codable, Hashable {
         try container.encode(type, forKey: .type)
         try container.encode(currency, forKey: .currency)
         try container.encode(date, forKey: .date)
-        try container.encode(description, forKey: .description)
+        try container.encodeIfPresent(description, forKey: .description)
     }
 }
 
