@@ -2,7 +2,29 @@ openapi: 3.1.0
 
 info:
   title: Budget Buddy API
-  description: REST API for Budget Buddy.
+  description: |
+    Personal-finance REST API for Budget Buddy. Resources are scoped to the authenticated user;
+    no cross-user access exists.
+
+    **Authentication.** Every endpoint requires an OIDC-issued JWT access token sent as
+    `Authorization: Bearer <jwt>`. There are no login or registration endpoints in this spec —
+    auth is handled out-of-band by the identity provider.
+
+    **Errors.** All non-2xx responses use `application/problem+json` (RFC 9457). 400 responses
+    caused by per-field validation populate `errors[]` with one `FieldError` per offending field;
+    other 4xx/5xx put the human-readable summary in `detail`.
+
+    **Money.** All amount fields are `integer` (`int64`) in **minor units** of the field's
+    `currency` (e.g. `1299` represents €12.99 when `currency` is `EUR`). Clients are responsible
+    for formatting against the locale.
+
+    **Pagination.** List endpoints use zero-based `page` (default 0) and `size` (default 20,
+    max 200) query parameters and return a `PaginationMeta` block with `page`, `size`, and
+    `total`. Beyond-last pages return an empty `items` array, not 404.
+
+    **Mutations.** The API is PUT-only — PATCH is intentionally not part of the contract. To
+    clear a nullable field, send `null` (or omit it) in the PUT body. To remove a resource,
+    use `DELETE`.
   version: "5.0.0"
   contact:
     name: Budget Buddy
@@ -173,85 +195,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /v1/transactions/summary:
-    get:
-      tags: [ transactions ]
-      summary: Monthly income, expense, and balance summary
-      description: |
-        Returns monthly income, expense, and balance totals for a single calendar month, in a
-        single currency, scoped to the authenticated user.
-
-        Only transactions whose `currency` matches the requested currency contribute to `income`,
-        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
-        are reflected in `excludedTransactionCount` so the UI can surface an informational note.
-      operationId: getTransactionsSummary
-      parameters:
-        - $ref: "#/components/parameters/monthQuery"
-        - $ref: "#/components/parameters/currencyQuery"
-      responses:
-        "200":
-          description: Monthly summary for the requested month and currency
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MonthlySummary"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-  /v1/transactions/summary/trend:
-    get:
-      tags: [ transactions ]
-      summary: Monthly summary trend across a month range
-      description: |
-        Returns one `MonthlySummary` per calendar month across an inclusive range, in a single
-        currency, scoped to the authenticated user. Intended for sparkline / trend visualisations
-        that need per-month buckets in a single request.
-
-        Months in the range with no matching transactions are returned with zeroed totals, so
-        the response array length always equals the number of months between `from` and `to`
-        inclusive. Buckets are ordered oldest first.
-
-        Only transactions whose `currency` matches the requested currency contribute to `income`,
-        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
-        are reflected in `excludedTransactionCount`.
-
-        The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound
-        query cost.
-      operationId: getTransactionsSummaryTrend
-      parameters:
-        - name: from
-          in: query
-          required: true
-          description: First calendar month in the range (inclusive).
-          schema:
-            $ref: "#/components/schemas/Month"
-        - name: to
-          in: query
-          required: true
-          description: Last calendar month in the range (inclusive). Must be greater than or equal to `from`, and no more than 24 months after `from`.
-          schema:
-            $ref: "#/components/schemas/Month"
-        - $ref: "#/components/parameters/currencyQuery"
-      responses:
-        "200":
-          description: One `MonthlySummary` per calendar month in the requested range, oldest first.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MonthlySummary"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
   /v1/transactions:
     get:
       tags: [ transactions ]
@@ -348,6 +291,85 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /v1/transactions/summary:
+    get:
+      tags: [ transactions ]
+      summary: Monthly income, expense, and balance summary
+      description: |
+        Returns monthly income, expense, and balance totals for a single calendar month, in a
+        single currency, scoped to the authenticated user.
+
+        Only transactions whose `currency` matches the requested currency contribute to `income`,
+        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
+        are reflected in `excludedTransactionCount` so the UI can surface an informational note.
+      operationId: getTransactionsSummary
+      parameters:
+        - $ref: "#/components/parameters/monthQuery"
+        - $ref: "#/components/parameters/currencyQuery"
+      responses:
+        "200":
+          description: Monthly summary for the requested month and currency
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlySummary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /v1/transactions/summary/trend:
+    get:
+      tags: [ transactions ]
+      summary: Monthly summary trend across a month range
+      description: |
+        Returns one `MonthlySummary` per calendar month across an inclusive range, in a single
+        currency, scoped to the authenticated user. Intended for sparkline / trend visualisations
+        that need per-month buckets in a single request.
+
+        Months in the range with no matching transactions are returned with zeroed totals, so
+        the response array length always equals the number of months between `from` and `to`
+        inclusive. Buckets are ordered oldest first.
+
+        Only transactions whose `currency` matches the requested currency contribute to `income`,
+        `expense`, `balance`, `incomeCount`, and `expenseCount`. Transactions in other currencies
+        are reflected in `excludedTransactionCount`.
+
+        The maximum allowed range is 24 months — wider ranges are rejected with 400 to bound
+        query cost.
+      operationId: getTransactionsSummaryTrend
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: First calendar month in the range (inclusive).
+          schema:
+            $ref: "#/components/schemas/Month"
+        - name: to
+          in: query
+          required: true
+          description: Last calendar month in the range (inclusive). Must be greater than or equal to `from`, and no more than 24 months after `from`.
+          schema:
+            $ref: "#/components/schemas/Month"
+        - $ref: "#/components/parameters/currencyQuery"
+      responses:
+        "200":
+          description: One `MonthlySummary` per calendar month in the requested range, oldest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlySummary"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
