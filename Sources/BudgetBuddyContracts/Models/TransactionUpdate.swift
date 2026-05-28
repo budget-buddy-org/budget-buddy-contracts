@@ -11,8 +11,8 @@ import Foundation
 public struct TransactionUpdate: Sendable, Codable, Hashable {
 
     public static let amountRule = NumericRule<Int64>(minimum: 1, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
-    public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: "/^[A-Z]{3}$/")
-    public static let descriptionRule = StringRule(minLength: nil, maxLength: 255, pattern: nil)
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
+    public static let descriptionRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
     /** UUID of the category to reassign this transaction to. */
     public var categoryId: UUID?
     /** New amount in minor units. Must be at least 1. */
@@ -23,7 +23,7 @@ public struct TransactionUpdate: Sendable, Codable, Hashable {
     public var currency: String?
     /** New transaction date (YYYY-MM-DD). */
     public var date: Date?
-    /** Updated free-text note (up to 255 characters). Pass null to clear the existing note. */
+    /** Updated free-text note (1–255 characters). Pass null to clear the note. */
     public var description: String?
 
     public init(categoryId: UUID? = nil, amount: Int64? = nil, type: TransactionType? = nil, currency: String? = nil, date: Date? = nil, description: String? = nil) {

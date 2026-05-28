@@ -10,6 +10,44 @@ import Foundation
 open class UsersAPI {
 
     /**
+     Clear current user's data
+     
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: Void
+     */
+    open class func clearCurrentUserData(apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) {
+        return try await clearCurrentUserDataWithRequestBuilder(apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     Clear current user's data
+     - DELETE /v1/users/me/data
+     - Permanently deletes every category and transaction owned by the authenticated user, while leaving the account itself intact. Preferences and per-client settings are preserved; the identity provider is not contacted and the bearer token remains valid.  Intended for \"start over\" flows where the user wants to wipe their financial history without losing their sign-in or app configuration. The operation is idempotent — a second call on an already-empty account returns 204. 
+     - Bearer Token:
+       - type: http
+       - name: BearerAuth
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<Void> 
+     */
+    open class func clearCurrentUserDataWithRequestBuilder(apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Void> {
+        let localVariablePath = "/v1/users/me/data"
+        let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters: [String: any Sendable]? = nil
+
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            :
+        ]
+
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<Void>.Type = apiConfiguration.requestBuilderFactory.getNonDecodableBuilder()
+
+        return localVariableRequestBuilder.init(method: "DELETE", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    }
+
+    /**
      Delete current user account
      
      - parameter apiConfiguration: The configuration for the http request.
@@ -50,7 +88,7 @@ open class UsersAPI {
     /**
      Delete per-client settings
      
-     - parameter clientId: (path) Client identifier used to scope per-client settings. Conventional values include &#x60;web&#x60;, &#x60;mobile-ios&#x60;, &#x60;mobile-android&#x60;, &#x60;telegram-bot&#x60;. Lowercase letters, digits, and hyphens only; up to 32 characters.  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
      */
@@ -65,7 +103,7 @@ open class UsersAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter clientId: (path) Client identifier used to scope per-client settings. Conventional values include &#x60;web&#x60;, &#x60;mobile-ios&#x60;, &#x60;mobile-android&#x60;, &#x60;telegram-bot&#x60;. Lowercase letters, digits, and hyphens only; up to 32 characters.  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Void> 
      */
@@ -131,7 +169,7 @@ open class UsersAPI {
     /**
      Get per-client settings
      
-     - parameter clientId: (path) Client identifier used to scope per-client settings. Conventional values include &#x60;web&#x60;, &#x60;mobile-ios&#x60;, &#x60;mobile-android&#x60;, &#x60;telegram-bot&#x60;. Lowercase letters, digits, and hyphens only; up to 32 characters.  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: ClientSettings
      */
@@ -146,7 +184,7 @@ open class UsersAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter clientId: (path) Client identifier used to scope per-client settings. Conventional values include &#x60;web&#x60;, &#x60;mobile-ios&#x60;, &#x60;mobile-android&#x60;, &#x60;telegram-bot&#x60;. Lowercase letters, digits, and hyphens only; up to 32 characters.  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<ClientSettings> 
      */
@@ -250,7 +288,7 @@ open class UsersAPI {
     /**
      Upsert per-client settings
      
-     - parameter clientId: (path) Client identifier used to scope per-client settings. Conventional values include &#x60;web&#x60;, &#x60;mobile-ios&#x60;, &#x60;mobile-android&#x60;, &#x60;telegram-bot&#x60;. Lowercase letters, digits, and hyphens only; up to 32 characters.  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
      - parameter clientSettingsWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: ClientSettings
@@ -266,7 +304,7 @@ open class UsersAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter clientId: (path) Client identifier used to scope per-client settings. Conventional values include &#x60;web&#x60;, &#x60;mobile-ios&#x60;, &#x60;mobile-android&#x60;, &#x60;telegram-bot&#x60;. Lowercase letters, digits, and hyphens only; up to 32 characters.  
+     - parameter clientId: (path) Client this settings row belongs to. See the &#x60;ClientId&#x60; schema for the allowed format. 
      - parameter clientSettingsWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<ClientSettings> 

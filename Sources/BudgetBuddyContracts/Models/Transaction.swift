@@ -9,13 +9,14 @@ import Foundation
 
 public struct Transaction: Sendable, Codable, Hashable {
 
-    public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: "/^[A-Z]{3}$/")
-    public static let descriptionRule = StringRule(minLength: nil, maxLength: 255, pattern: nil)
+    public static let amountRule = NumericRule<Int64>(minimum: 1, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
+    public static let descriptionRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
     /** Unique identifier for the transaction. */
     public var id: UUID
     /** UUID of the category this transaction belongs to. */
     public var categoryId: UUID
-    /** Amount in minor units (e.g. 1299 = €12.99). */
+    /** Amount in minor units (e.g. 1299 = €12.99). Always at least 1. */
     public var amount: Int64
     /** Whether this transaction is an outgoing expense or incoming income. */
     public var type: TransactionType
@@ -23,14 +24,10 @@ public struct Transaction: Sendable, Codable, Hashable {
     public var currency: String
     /** Date on which the transaction occurred (YYYY-MM-DD). */
     public var date: Date
-    /** Optional free-text note for the transaction (up to 255 characters). */
+    /** Free-text note for the transaction (1–255 characters). Null when no note is set. */
     public var description: String?
-    /** ISO 8601 timestamp when the transaction record was created. */
-    public var createdAt: Date?
-    /** ISO 8601 timestamp when the transaction record was last updated. */
-    public var updatedAt: Date?
 
-    public init(id: UUID, categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String? = nil, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    public init(id: UUID, categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String?) {
         self.id = id
         self.categoryId = categoryId
         self.amount = amount
@@ -38,8 +35,6 @@ public struct Transaction: Sendable, Codable, Hashable {
         self.currency = currency
         self.date = date
         self.description = description
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -50,8 +45,6 @@ public struct Transaction: Sendable, Codable, Hashable {
         case currency
         case date
         case description
-        case createdAt
-        case updatedAt
     }
 
     // Encodable protocol methods
@@ -64,9 +57,7 @@ public struct Transaction: Sendable, Codable, Hashable {
         try container.encode(type, forKey: .type)
         try container.encode(currency, forKey: .currency)
         try container.encode(date, forKey: .date)
-        try container.encodeIfPresent(description, forKey: .description)
-        try container.encodeIfPresent(createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
+        try container.encode(description, forKey: .description)
     }
 }
 

@@ -20,7 +20,7 @@ public struct Problem: Sendable, Codable, Hashable {
     public var detail: String?
     /** URI reference identifying the specific occurrence of the problem. */
     public var instance: String?
-    /** Optional list of specific errors (e.g., field-level validation errors). */
+    /** Field-level validation errors. Present on 400 responses caused by per-field validation; omitted otherwise. */
     public var errors: [FieldError]?
 
     public init(type: String? = "about:blank", title: String, status: Int, detail: String? = nil, instance: String? = nil, errors: [FieldError]? = nil) {

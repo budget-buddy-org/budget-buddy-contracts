@@ -9,13 +9,14 @@ import Foundation
 
 public struct CategorySpendingRow: Sendable, Codable, Hashable {
 
+    public static let categoryNameRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
     public static let monthlyBudgetRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let spentRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let transactionCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let excludedTransactionCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     /** UUID of the category this row summarises. */
     public var categoryId: UUID
-    /** Human-readable name of the category at the time of the response. */
+    /** Human-readable name of the category at the time of the response (1–255 characters). */
     public var categoryName: String
     /** Snapshot of the category's current monthly budget, in minor units. Null when no budget is set. */
     public var monthlyBudget: Int64?
@@ -26,7 +27,7 @@ public struct CategorySpendingRow: Sendable, Codable, Hashable {
     /** Number of EXPENSE transactions in this month for this category whose currency did not match the requested currency and were therefore not summed. */
     public var excludedTransactionCount: Int
 
-    public init(categoryId: UUID, categoryName: String, monthlyBudget: Int64? = nil, spent: Int64, transactionCount: Int, excludedTransactionCount: Int) {
+    public init(categoryId: UUID, categoryName: String, monthlyBudget: Int64?, spent: Int64, transactionCount: Int, excludedTransactionCount: Int) {
         self.categoryId = categoryId
         self.categoryName = categoryName
         self.monthlyBudget = monthlyBudget
@@ -50,7 +51,7 @@ public struct CategorySpendingRow: Sendable, Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(categoryId, forKey: .categoryId)
         try container.encode(categoryName, forKey: .categoryName)
-        try container.encodeIfPresent(monthlyBudget, forKey: .monthlyBudget)
+        try container.encode(monthlyBudget, forKey: .monthlyBudget)
         try container.encode(spent, forKey: .spent)
         try container.encode(transactionCount, forKey: .transactionCount)
         try container.encode(excludedTransactionCount, forKey: .excludedTransactionCount)

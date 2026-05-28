@@ -11,7 +11,7 @@ import Foundation
 public struct UserPreferences: Sendable, Codable, Hashable {
 
     public static let languageRule = StringRule(minLength: 2, maxLength: 7, pattern: "/^[a-z]{2,3}(-[A-Z]{2})?$/")
-    public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: "/^[A-Z]{3}$/")
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
     public static let timezoneRule = StringRule(minLength: 1, maxLength: 64, pattern: nil)
     /** Preferred language as a BCP 47 tag. */
     public var language: String
@@ -19,25 +19,17 @@ public struct UserPreferences: Sendable, Codable, Hashable {
     public var currency: String
     /** Preferred IANA timezone. */
     public var timezone: String
-    /** ISO 8601 timestamp when the preferences row was first created. */
-    public var createdAt: Date?
-    /** ISO 8601 timestamp when the preferences row was last updated. */
-    public var updatedAt: Date?
 
-    public init(language: String, currency: String, timezone: String, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    public init(language: String, currency: String, timezone: String) {
         self.language = language
         self.currency = currency
         self.timezone = timezone
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case language
         case currency
         case timezone
-        case createdAt
-        case updatedAt
     }
 
     // Encodable protocol methods
@@ -47,8 +39,6 @@ public struct UserPreferences: Sendable, Codable, Hashable {
         try container.encode(language, forKey: .language)
         try container.encode(currency, forKey: .currency)
         try container.encode(timezone, forKey: .timezone)
-        try container.encodeIfPresent(createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
     }
 }
 

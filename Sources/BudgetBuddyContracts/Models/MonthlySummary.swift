@@ -10,13 +10,13 @@ import Foundation
 public struct MonthlySummary: Sendable, Codable, Hashable {
 
     public static let monthRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^\\d{4}-(0[1-9]|1[0-2])$/")
-    public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: "/^[A-Z]{3}$/")
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
     public static let incomeRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let expenseRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let incomeCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let expenseCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     public static let excludedTransactionCountRule = NumericRule<Int>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
-    /** Calendar month this summary covers, formatted YYYY-MM. */
+    /** Calendar month this summary covers. */
     public var month: String
     /** ISO 4217 currency code echoed back from the request. */
     public var currency: String

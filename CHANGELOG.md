@@ -1,3 +1,75 @@
+## [5.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v4.1.0...v5.0.0) (2026-05-28)
+
+### ⚠ BREAKING CHANGES
+
+* read schemas no longer include `createdAt`/`updatedAt`;
+write/update schemas reject unknown fields and require `description` /
+`monthlyBudget` explicitly; transaction `description` is now nullable
+across all variants.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+* refactor: tighten spec descriptions, DRY client settings payload
+
+- Strip deployment-specific detail from server descriptions (Raspberry Pi,
+  nginx, gradle bootRun command) — keep the spec agnostic to how the API is
+  hosted or started locally.
+- Extract reusable ClientSettingsPayload schema; ClientSettings.settings and
+  ClientSettingsWrite.settings now $ref it instead of duplicating the inline
+  opaque-object shape.
+- Add additionalProperties: false to FieldError for parity with other strict
+  schemas.
+- Simplify Me.id description so it describes the value (stable owner id)
+  instead of leaking how the server derives it from the OIDC subject.
+- Drop "(PUT semantics)" parentheticals from replace operations and PUT
+  request schemas — the HTTP verb and "Replace X" summary already convey it.
+- Standardize null-clearing phrasing across Category/Transaction write and
+  update schemas to "Pass null to clear the {budget|note}."
+- Rewrite Problem.errors description to specify when the array is populated
+  rather than restating that it's optional.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* chore: pin pnpm via packageManager, bump @hey-api/openapi-ts
+
+- Pin pnpm@11.4.0 via Corepack's packageManager field so local dev and CI
+  stay on the same version instead of drifting to whatever pnpm/action-setup
+  resolves at run time.
+- Bump @hey-api/openapi-ts 0.97.2 → 0.97.3 from pnpm up; lockfile refreshed.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* ci: drop pnpm version pin from workflows, defer to packageManager
+
+The packageManager field added in 245f460 conflicts with the explicit
+"version: 10" passed to pnpm/action-setup, which now errors out with
+ERR_PNPM_BAD_PM_VERSION on every workflow run. Removing the explicit
+pin so action-setup reads the version from package.json's packageManager
+field — single source of truth, and CI matches local.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+* docs: fix stale README claims and trim obsolete prerequisites
+
+- Frontend client is fetch-based (@hey-api/client-fetch), not Axios.
+- Pagination uses page/size/total, not the previously documented
+  total/limit/offset.
+- All endpoints require Bearer JWT — there are no login/register
+  endpoints in the spec; remove the misleading exception.
+- Drop hardcoded "1.1.0" version from Swift/Maven snippets; point at
+  the release badge for the current version.
+- Drop OpenAPI Generator CLI and Spectral CLI from prerequisites — they
+  install transparently via "pnpm install".
+- pnpm prerequisite reworded to reflect the Corepack-pinned setup.
+- Release workflow steps rewritten to match the PR + squash-merge flow
+  documented in CLAUDE.md.
+
+Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+### Code Refactoring
+
+* harden and DRY OpenAPI schema, modernize tooling ([#112](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/112)) ([4523155](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/45231558d2fda6813113be02b0f549c0ed068948))
+
 ## [4.1.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v4.0.0...v4.1.0) (2026-05-10)
 
 ### Features

@@ -10,27 +10,19 @@ import Foundation
 /** Authenticated user&#39;s local identity record together with their global preferences. Intended as a single bootstrap call for client apps.  */
 public struct Me: Sendable, Codable, Hashable {
 
-    /** The local Budget Buddy user UUID, derived from the OIDC subject on first login. Stable across sessions and used as the owner of all user-scoped resources. */
+    /** Stable identifier for the authenticated user. Used as the owner of all user-scoped resources and unchanged across sessions. */
     public var id: UUID
     /** The user's current global preferences (server defaults if none have been stored). */
     public var preferences: UserPreferences
-    /** ISO 8601 timestamp when the local user record was first provisioned. */
-    public var createdAt: Date?
-    /** ISO 8601 timestamp when the local user record was last updated. */
-    public var updatedAt: Date?
 
-    public init(id: UUID, preferences: UserPreferences, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    public init(id: UUID, preferences: UserPreferences) {
         self.id = id
         self.preferences = preferences
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case id
         case preferences
-        case createdAt
-        case updatedAt
     }
 
     // Encodable protocol methods
@@ -39,8 +31,6 @@ public struct Me: Sendable, Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(preferences, forKey: .preferences)
-        try container.encodeIfPresent(createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
     }
 }
 

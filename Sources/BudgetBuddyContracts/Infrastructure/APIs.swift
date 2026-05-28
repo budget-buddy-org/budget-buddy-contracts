@@ -74,7 +74,7 @@ open class BudgetBuddyContractsAPIConfiguration: @unchecked Sendable {
     // MARK: - Init
 
     public init(
-        basePath: String = "http://localhost:8080",
+        basePath: String = "https://budgetbuddy.glebremniov.keenetic.link",
         customHeaders: [String: String] = [:],
         credential: URLCredential? = nil,
         requestBuilderFactory: RequestBuilderFactory = URLSessionRequestBuilderFactory(),

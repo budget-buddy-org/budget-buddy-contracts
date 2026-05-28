@@ -13,10 +13,10 @@ public struct CategoryWrite: Sendable, Codable, Hashable {
     public static let monthlyBudgetRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     /** Human-readable name for the category (1–255 characters). */
     public var name: String
-    /** Monthly spending budget for this category, in minor units. Omit or pass null for no budget. */
+    /** Monthly spending budget for this category, in minor units. Pass null to clear the budget. */
     public var monthlyBudget: Int64?
 
-    public init(name: String, monthlyBudget: Int64? = nil) {
+    public init(name: String, monthlyBudget: Int64?) {
         self.name = name
         self.monthlyBudget = monthlyBudget
     }
@@ -31,7 +31,7 @@ public struct CategoryWrite: Sendable, Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
-        try container.encodeIfPresent(monthlyBudget, forKey: .monthlyBudget)
+        try container.encode(monthlyBudget, forKey: .monthlyBudget)
     }
 }
 

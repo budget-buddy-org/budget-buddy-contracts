@@ -9,32 +9,25 @@ import Foundation
 
 public struct Category: Sendable, Codable, Hashable {
 
+    public static let nameRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
     public static let monthlyBudgetRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     /** Unique identifier for the category. */
     public var id: UUID
-    /** Human-readable name of the category. */
+    /** Human-readable name of the category (1–255 characters). */
     public var name: String
-    /** Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Null means no budget set. */
+    /** Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Null when no budget is set. */
     public var monthlyBudget: Int64?
-    /** ISO 8601 timestamp when the category was created. */
-    public var createdAt: Date?
-    /** ISO 8601 timestamp when the category was last updated. */
-    public var updatedAt: Date?
 
-    public init(id: UUID, name: String, monthlyBudget: Int64? = nil, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    public init(id: UUID, name: String, monthlyBudget: Int64?) {
         self.id = id
         self.name = name
         self.monthlyBudget = monthlyBudget
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case id
         case name
         case monthlyBudget
-        case createdAt
-        case updatedAt
     }
 
     // Encodable protocol methods
@@ -43,9 +36,7 @@ public struct Category: Sendable, Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
-        try container.encodeIfPresent(monthlyBudget, forKey: .monthlyBudget)
-        try container.encodeIfPresent(createdAt, forKey: .createdAt)
-        try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
+        try container.encode(monthlyBudget, forKey: .monthlyBudget)
     }
 }
 

@@ -7,10 +7,10 @@
 
 import Foundation
 
-/** Body for upserting per-client settings (PUT semantics — fully replaces any existing settings for the client). */
+/** Upsert body — fully replaces any existing settings for the client. */
 public struct ClientSettingsWrite: Sendable, Codable, Hashable {
 
-    /** Free-form JSON object owned by the client. Stored and returned as-is. */
+    /** The settings payload to store. */
     public var settings: [String: JSONValue]
 
     public init(settings: [String: JSONValue]) {

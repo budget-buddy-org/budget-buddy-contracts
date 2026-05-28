@@ -10,8 +10,8 @@ import Foundation
 public struct TransactionWrite: Sendable, Codable, Hashable {
 
     public static let amountRule = NumericRule<Int64>(minimum: 1, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
-    public static let currencyRule = StringRule(minLength: 3, maxLength: 3, pattern: "/^[A-Z]{3}$/")
-    public static let descriptionRule = StringRule(minLength: nil, maxLength: 255, pattern: nil)
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
+    public static let descriptionRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
     /** UUID of the category this transaction belongs to. */
     public var categoryId: UUID
     /** Amount in minor units (e.g. 1299 = €12.99). Must be at least 1. */
@@ -22,10 +22,10 @@ public struct TransactionWrite: Sendable, Codable, Hashable {
     public var currency: String
     /** Date on which the transaction occurred (YYYY-MM-DD). */
     public var date: Date
-    /** Optional free-text note for the transaction (up to 255 characters). */
+    /** Free-text note for the transaction (1–255 characters). Pass null to clear the note. */
     public var description: String?
 
-    public init(categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String? = nil) {
+    public init(categoryId: UUID, amount: Int64, type: TransactionType, currency: String, date: Date, description: String?) {
         self.categoryId = categoryId
         self.amount = amount
         self.type = type
@@ -52,7 +52,7 @@ public struct TransactionWrite: Sendable, Codable, Hashable {
         try container.encode(type, forKey: .type)
         try container.encode(currency, forKey: .currency)
         try container.encode(date, forKey: .date)
-        try container.encodeIfPresent(description, forKey: .description)
+        try container.encode(description, forKey: .description)
     }
 }
 

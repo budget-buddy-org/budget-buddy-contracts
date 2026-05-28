@@ -14,7 +14,7 @@ public struct CategoryUpdate: Sendable, Codable, Hashable {
     public static let monthlyBudgetRule = NumericRule<Int64>(minimum: 0, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
     /** New human-readable name for the category (1–255 characters). */
     public var name: String?
-    /** New monthly budget in minor units. Pass null to clear an existing budget. */
+    /** New monthly budget in minor units. Pass null to clear the budget. */
     public var monthlyBudget: Int64?
 
     public init(name: String? = nil, monthlyBudget: Int64? = nil) {

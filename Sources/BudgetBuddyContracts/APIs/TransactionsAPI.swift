@@ -53,7 +53,7 @@ open class TransactionsAPI {
     /**
      Delete transaction
      
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
      */
@@ -68,7 +68,7 @@ open class TransactionsAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Void> 
      */
@@ -96,7 +96,7 @@ open class TransactionsAPI {
     /**
      Get transaction
      
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Transaction
      */
@@ -111,7 +111,7 @@ open class TransactionsAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Transaction> 
      */
@@ -140,7 +140,7 @@ open class TransactionsAPI {
      Monthly income, expense, and balance summary
      
      - parameter month: (query) Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC. 
-     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: MonthlySummary
      */
@@ -156,7 +156,7 @@ open class TransactionsAPI {
        - type: http
        - name: BearerAuth
      - parameter month: (query) Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC. 
-     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<MonthlySummary> 
      */
@@ -185,9 +185,9 @@ open class TransactionsAPI {
     /**
      Monthly summary trend across a month range
      
-     - parameter from: (query) First calendar month in the range (inclusive), formatted YYYY-MM. Interpreted in UTC. 
-     - parameter to: (query) Last calendar month in the range (inclusive), formatted YYYY-MM. Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
-     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense. 
+     - parameter from: (query) First calendar month in the range (inclusive). 
+     - parameter to: (query) Last calendar month in the range (inclusive). Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: [MonthlySummary]
      */
@@ -202,9 +202,9 @@ open class TransactionsAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter from: (query) First calendar month in the range (inclusive), formatted YYYY-MM. Interpreted in UTC. 
-     - parameter to: (query) Last calendar month in the range (inclusive), formatted YYYY-MM. Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
-     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to income/expense. 
+     - parameter from: (query) First calendar month in the range (inclusive). 
+     - parameter to: (query) Last calendar month in the range (inclusive). Must be greater than or equal to &#x60;from&#x60;, and no more than 24 months after &#x60;from&#x60;. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<[MonthlySummary]> 
      */
@@ -247,7 +247,7 @@ open class TransactionsAPI {
      - parameter query: (query) Case-insensitive partial match against transaction description and category name (optional)
      - parameter amountMin: (query) Filter to transactions with amount greater than or equal to this value, in minor units (e.g. 1299 &#x3D; €12.99) (optional)
      - parameter amountMax: (query) Filter to transactions with amount less than or equal to this value, in minor units. Set equal to amountMin for an exact match (optional)
-     - parameter categoryId: (query) Filter by category (optional)
+     - parameter categoryId: (query) Filter to transactions assigned to this category. (optional)
      - parameter start: (query) Inclusive start date (optional)
      - parameter end: (query) Inclusive end date (optional)
      - parameter type: (query) Filter by transaction type (optional)
@@ -271,7 +271,7 @@ open class TransactionsAPI {
      - parameter query: (query) Case-insensitive partial match against transaction description and category name (optional)
      - parameter amountMin: (query) Filter to transactions with amount greater than or equal to this value, in minor units (e.g. 1299 &#x3D; €12.99) (optional)
      - parameter amountMax: (query) Filter to transactions with amount less than or equal to this value, in minor units. Set equal to amountMin for an exact match (optional)
-     - parameter categoryId: (query) Filter by category (optional)
+     - parameter categoryId: (query) Filter to transactions assigned to this category. (optional)
      - parameter start: (query) Inclusive start date (optional)
      - parameter end: (query) Inclusive end date (optional)
      - parameter type: (query) Filter by transaction type (optional)
@@ -312,7 +312,7 @@ open class TransactionsAPI {
     /**
      Replace transaction
      
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter transactionWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Transaction
@@ -324,11 +324,11 @@ open class TransactionsAPI {
     /**
      Replace transaction
      - PUT /v1/transactions/{transactionId}
-     - Fully replaces a transaction's data (PUT semantics).
+     - Fully replaces a transaction's data.
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter transactionWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Transaction> 
@@ -357,7 +357,7 @@ open class TransactionsAPI {
     /**
      Partially update transaction
      
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter transactionUpdate: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Transaction
@@ -373,7 +373,7 @@ open class TransactionsAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter transactionId: (path) Transaction UUID 
+     - parameter transactionId: (path) Transaction UUID. 
      - parameter transactionUpdate: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Transaction> 

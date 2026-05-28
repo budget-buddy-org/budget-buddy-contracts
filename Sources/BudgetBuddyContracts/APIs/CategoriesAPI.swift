@@ -53,7 +53,7 @@ open class CategoriesAPI {
     /**
      Delete category
      
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
      */
@@ -68,7 +68,7 @@ open class CategoriesAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Void> 
      */
@@ -97,7 +97,7 @@ open class CategoriesAPI {
      Per-category spending summary
      
      - parameter month: (query) Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC. 
-     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to &#x60;spent&#x60;. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: CategorySpendingSummary
      */
@@ -113,7 +113,7 @@ open class CategoriesAPI {
        - type: http
        - name: BearerAuth
      - parameter month: (query) Calendar month to summarise, formatted YYYY-MM. Interpreted in UTC. 
-     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to &#x60;spent&#x60;. 
+     - parameter currency: (query) ISO 4217 three-letter currency code. Only transactions in this currency contribute to the response totals. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<CategorySpendingSummary> 
      */
@@ -142,7 +142,7 @@ open class CategoriesAPI {
     /**
      Get category
      
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Category
      */
@@ -157,7 +157,7 @@ open class CategoriesAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Category> 
      */
@@ -231,7 +231,7 @@ open class CategoriesAPI {
     /**
      Replace category
      
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter categoryWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Category
@@ -243,11 +243,11 @@ open class CategoriesAPI {
     /**
      Replace category
      - PUT /v1/categories/{categoryId}
-     - Fully replaces a category's data (PUT semantics).
+     - Fully replaces a category's data.
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter categoryWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Category> 
@@ -276,7 +276,7 @@ open class CategoriesAPI {
     /**
      Partially update category
      
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter categoryUpdate: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Category
@@ -292,7 +292,7 @@ open class CategoriesAPI {
      - Bearer Token:
        - type: http
        - name: BearerAuth
-     - parameter categoryId: (path) Category UUID 
+     - parameter categoryId: (path) Category UUID. 
      - parameter categoryUpdate: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Category> 
