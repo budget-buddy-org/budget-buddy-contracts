@@ -19,4 +19,3 @@ openApiNullable: false
 skipOperationExample: true
 sourceFolder: src/main/java
 useJspecify: true
-templateDir: templates/JavaSpring
