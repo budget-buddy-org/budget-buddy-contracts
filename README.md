@@ -16,7 +16,7 @@ The core of this project is the OpenAPI specification located in `specs/openapi.
 
 | Target | Technology | Delivery Method | Usage |
 | :--- | :--- | :--- | :--- |
-| **Frontend** | TypeScript + Axios | GitHub Packages (npm) | Web dashboard |
+| **Frontend** | TypeScript (fetch) | GitHub Packages (npm) | Web dashboard |
 | **Backend** | Java + Spring Boot | GitHub Packages (Maven) | API Service implementation |
 | **Mobile** | Swift 6 | Git Repo (SPM) | iOS / macOS application |
 
@@ -32,49 +32,49 @@ The core of this project is the OpenAPI specification located in `specs/openapi.
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v24+)
-- [pnpm](https://pnpm.io/) (v10+)
-- [OpenAPI Generator CLI](https://openapi-generator.tech/docs/installation)
-- [Spectral CLI](https://meta.stoplight.io/docs/spectral/docs/guides/1-getting-started.md)
+- [pnpm](https://pnpm.io/) — pinned via Corepack from the `packageManager` field; run `corepack enable` once
 
 ```bash
-pnpm install
+pnpm install   # installs Spectral and openapi-generator-cli as devDeps
 ```
 
 ### Core Commands
 
 | Command | Description |
 | :--- | :--- |
-| `pnpm run lint` | Lints the spec with Spectral (enforces `operationId` and naming conventions). |
+| `pnpm run lint` | Lints the spec with Spectral (operationId, tags, descriptions, 500 responses). |
 | `pnpm run validate` | Checks the structural integrity of the OpenAPI document. |
 | `pnpm run mock` | Runs a Prism mock server locally at `http://localhost:4010`. |
 | `pnpm run generate` | Generates all clients (TS, Java, Swift) locally. |
-| `pnpm run generate:swift` | Specifically updates the committed Swift source files. |
+| `pnpm run generate:swift` | Regenerates the committed Swift sources under `Sources/BudgetBuddyContracts/`. |
 
 ---
 
 ## 📦 Usage
 
+See the [GitHub Release badge](#) above for the latest version.
+
 ### Swift (iOS/macOS)
 Add this repository as a dependency in your `Package.swift`:
 ```swift
 dependencies: [
-    .package(url: "https://github.com/budget-buddy-org/budget-buddy-contracts.git", from: "1.1.0")
+    .package(url: "https://github.com/budget-buddy-org/budget-buddy-contracts.git", from: "<latest>")
 ]
 ```
 
 ### TypeScript (Web)
-Install from GitHub Packages (requires `.npmrc` configuration):
+Install from GitHub Packages (requires `.npmrc` configuration pointing `@budget-buddy-org` to `https://npm.pkg.github.com`):
 ```bash
 pnpm add @budget-buddy-org/budget-buddy-contracts
 ```
 
 ### Java (Spring Boot)
-Add to your `pom.xml`:
+Add to your `pom.xml` (requires Maven server credentials for GitHub Packages):
 ```xml
 <dependency>
     <groupId>com.budgetbuddy</groupId>
     <artifactId>budget-buddy-contracts</artifactId>
-    <version>1.1.0</version>
+    <version><!-- latest --></version>
 </dependency>
 ```
 
@@ -82,30 +82,32 @@ Add to your `pom.xml`:
 
 ## 🚦 Release Workflow
 
-1. **Modify the Spec:** Edit `specs/openapi.yaml`.
-2. **Use Conventional Commits:** Merge changes to `main` with commit messages such as `feat(spec): add category color` or `fix(auth): clarify refresh token schema`.
-3. **Automatic Release:** The `Release` GitHub Action runs on every push to `main`, calculates the next semantic version from commit history, then automatically:
-   - bumps `package.json` and `specs/openapi.yaml` to the new version
-   - regenerates and commits the Swift sources in `Sources/BudgetBuddyContracts/`
+1. **Edit the spec:** `specs/openapi.yaml` (and/or `config/*.yaml`).
+2. **Lint and validate:** `pnpm run lint && pnpm run validate`.
+3. **Open a PR with a conventional-commit title** (`feat:`, `fix:`, `feat!:`, …). PRs are squash-merged, so the PR title becomes the commit on `main` and drives semantic-release.
+4. **CI does the rest** — on push to `main`, the release pipeline:
+   - calculates the next semver from commit history
+   - bumps `package.json` and `specs/openapi.yaml` to that version
+   - regenerates and commits the Swift sources under `Sources/BudgetBuddyContracts/`
    - updates `CHANGELOG.md`
    - creates the Git tag and GitHub Release
-   - publishes the generated TypeScript client to GitHub Packages
-   - publishes the generated Java Spring stubs to GitHub Packages
+   - publishes the TypeScript client to GitHub Packages (npm)
+   - publishes the Java Spring stubs to GitHub Packages (Maven)
 
-### Commit Message Enforcement
+### Commit message enforcement
 
 - Local commits are checked by Husky + Commitlint.
-- Pull requests are checked again in CI, so invalid commit messages cannot be merged accidentally.
+- PRs are re-checked in CI; invalid messages cannot be merged.
 - Release impact follows Conventional Commits:
-  - `fix:` and `perf:` => patch
-  - `feat:` => minor
-  - `!` or `BREAKING CHANGE:` => major
+  - `fix:` / `perf:` → patch
+  - `feat:` → minor
+  - `!` suffix or `BREAKING CHANGE:` footer → major
 
 ---
 
 ## 📝 API Design Conventions
 
-- **Currency:** All monetary amounts are handled as `integers` in minor units (e.g., `$10.50` is represented as `1050`).
-- **Errors:** We follow **RFC 9457** (Problem Details for HTTP APIs). Every error response uses the `application/problem+json` content type.
-- **Pagination:** Collections use a standardized `PaginationMeta` object containing `total`, `limit`, and `offset`.
-- **Auth:** Bearer Token (JWT) is used globally except for login/register endpoints.
+- **Currency:** Monetary amounts are `integer` (`int64`) in minor units — e.g. `1050` = `€10.50`. ISO 4217 codes accompany every amount.
+- **Errors:** Every error response uses `application/problem+json` per **RFC 9457**. Field-level validation errors are surfaced as `Problem.errors[]` on `400` responses.
+- **Pagination:** List endpoints accept `page` (zero-based, default 0) and `size` (1–200, default 20) query parameters; the response carries a `PaginationMeta` with `page`, `size`, and `total`.
+- **Auth:** Every endpoint requires a Bearer JWT issued by the OIDC provider — there are no auth endpoints in this spec.
