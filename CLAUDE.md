@@ -73,6 +73,7 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - `openapi-ts.config.ts` — `@hey-api/openapi-ts` config for TypeScript generation (types + SDK + fetch client)
 - `config/typescript-package.json` — static `package.json` template for the published TypeScript package; version injected by CI at release time
 - `config/spring-server.yaml`, `config/swift6.yaml` — `openapi-generator` options for Java and Swift targets
+- `templates/JavaSpring/beanValidation.mustache` — Mustache template override applied via `spring-server.yaml`'s `templateDir`; gates `@NotNull` behind `^isNullable` so spec-legal `null` payloads for required-nullable fields aren't rejected by Bean Validation. Tracks upstream PR [openapi-generator#14766](https://github.com/OpenAPITools/openapi-generator/pull/14766) — delete this file once that PR merges and the generator version is bumped
 - `config/maven-settings.xml` — Maven server credentials template; references `${env.GITHUB_ACTOR}` and `${env.GITHUB_TOKEN}` so it is safe to commit (no hardcoded secrets)
 - `openapitools.json` — pins openapi-generator version (currently 7.21.0; needed for OAS 3.1 `type: [string, "null"]`)
 - `Package.swift` — makes this repo a valid Swift Package; points to `Sources/BudgetBuddyContracts/`
@@ -90,12 +91,22 @@ Do **not** manually bump versions, tag, or run `generate:swift` before merging �
 - All schema properties have a `description` field (enforced by Spectral)
 - All API tags have a `description` field (enforced by Spectral)
 - Error responses use `application/problem+json` with the `Problem` schema (RFC 9457)
-- Amounts are `integer` with `format: int64` in minor currency units (e.g. `1299` = €12.99); applies to all amount fields across read, write, and update schemas
+- Amounts are `integer` with `format: int64` in minor currency units (e.g. `1299` = €12.99); applies to all amount fields across read and write schemas
 - Currency codes are `string` with `minLength: 3` and `maxLength: 3` (ISO 4217)
-- Free-text note fields (`description`) are bounded with `maxLength: 255` across all schemas; nullable update variants (`type: [string, "null"]`) carry the same bound
-- Write schemas (POST/PUT body) and Update schemas (PATCH body) are separate from read schemas
-- PATCH schemas represent partial updates: fields are optional, and empty patch objects are invalid
+- Free-text note fields (`description`) are bounded with `maxLength: 255` across all schemas; nullable write variants (`type: [string, "null"]`) carry the same bound
+- Write schemas (POST/PUT body) are separate from read schemas; PATCH is intentionally not supported (see "PATCH policy" below)
+- Free-text and amount fields whose write schemas accept `type: [..., "null"]` use plain types in the generated code (`openApiNullable: false`); clients clear a field by sending `null`
 - List endpoints (`GET /v1/categories`, `GET /v1/transactions`) use `page` (zero-based, min 0, default 0) and `size` (min 1, max 200, default 20) query parameters; `PaginationMeta` returns `page`, `size`, and `total`
 - `GET /v1/transactions` additionally supports filtering by `query` (case-insensitive partial match across description and category name, `maxLength: 255`), `amountMin` / `amountMax` (inclusive range in minor units, `int64`, `minimum: 1` — set min equal to max for an exact match), `categoryId`, `start`/`end` (date range), `type`, and `sort` (`asc`/`desc`, default `desc`); all filters combine with AND semantics
 - Authentication is handled externally by Zitadel (OIDC); no auth endpoints exist in this spec — all endpoints require `BearerAuth` (Zitadel-issued JWTs)
 - When adding a `description` alongside a `$ref`, use `allOf` wrapping: `allOf: [{$ref: ...}]` with `description` as a sibling — avoids Spectral false positives with bare `$ref` + `description`
+
+## PATCH policy
+
+The API is **PUT-only** for mutations. PATCH is intentionally not part of the contract. Rationale:
+
+- All mutable resources are small and flat (Category: 2 fields, Transaction: 6, UserPreferences: 3); clients always have the full resource in memory on edit screens.
+- PATCH would require `JsonNullable<T>` wrapping on every nullable field to distinguish "absent" from "explicit null" per JSON Merge Patch (RFC 7396). Combined with the openapi-generator bug that emits `@NotNull` on nullable getters ([upstream PR #14766](https://github.com/OpenAPITools/openapi-generator/pull/14766), still unmerged), this carries a meaningful tax in every Java/TS/Swift consumer.
+- PUT with `openApiNullable: false` lets nullable fields stay plain types; `null` in the JSON body clears the field on the server side.
+
+If a future endpoint genuinely needs partial updates (e.g. a large user-profile resource), introduce PATCH for that single resource — don't re-enable it globally.

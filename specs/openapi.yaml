@@ -158,33 +158,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    patch:
-      tags: [ categories ]
-      summary: Partially update category
-      description: Partially updates a category; only provided fields are modified. Empty patch objects are invalid and return 400.
-      operationId: updateCategory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CategoryUpdate"
-      responses:
-        "200":
-          description: Updated category
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Category"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
     delete:
       tags: [ categories ]
       summary: Delete category
@@ -432,33 +405,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    patch:
-      tags: [ transactions ]
-      summary: Partially update transaction
-      description: Partially updates a transaction; only provided fields are modified. Empty patch objects are invalid and return 400.
-      operationId: updateTransaction
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TransactionUpdate"
-      responses:
-        "200":
-          description: Updated transaction
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Transaction"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
     delete:
       tags: [ transactions ]
       summary: Delete transaction
@@ -574,33 +520,6 @@ paths:
       responses:
         "200":
           description: Replaced preferences
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserPreferences"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-    patch:
-      tags: [ users ]
-      summary: Partially update current user's preferences
-      description: |
-        Partially updates the authenticated user's global preferences; only fields included in the
-        request body are modified. Empty patch objects are invalid and return 400.
-      operationId: updateCurrentUserPreferences
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserPreferencesUpdate"
-      responses:
-        "200":
-          description: Updated preferences
           content:
             application/json:
               schema:
@@ -845,25 +764,6 @@ components:
           description: Monthly spending budget for this category, in minor units. Pass null to clear the budget.
           example: 50000
 
-    CategoryUpdate:
-      type: object
-      additionalProperties: false
-      description: Patch request — only provided fields are updated. At least one field must be provided.
-      minProperties: 1
-      properties:
-        name:
-          type: string
-          description: New human-readable name for the category (1–255 characters).
-          minLength: 1
-          maxLength: 255
-          example: Dining
-        monthlyBudget:
-          type: [ integer, "null" ]
-          format: int64
-          minimum: 0
-          description: New monthly budget in minor units. Pass null to clear the budget.
-          example: 75000
-
     Uuid:
       type: string
       format: uuid
@@ -966,39 +866,6 @@ components:
         description:
           type: [ string, "null" ]
           description: Free-text note for the transaction (1–255 characters). Pass null to clear the note.
-          minLength: 1
-          maxLength: 255
-
-    TransactionUpdate:
-      type: object
-      additionalProperties: false
-      description: Patch request — only provided fields are updated. At least one field must be provided.
-      minProperties: 1
-      properties:
-        categoryId:
-          description: UUID of the category to reassign this transaction to.
-          allOf:
-            - $ref: "#/components/schemas/Uuid"
-        amount:
-          type: integer
-          format: int64
-          description: New amount in minor units. Must be at least 1.
-          minimum: 1
-        type:
-          description: New transaction type.
-          allOf:
-            - $ref: "#/components/schemas/TransactionType"
-        currency:
-          description: New ISO 4217 three-letter currency code.
-          allOf:
-            - $ref: "#/components/schemas/Currency"
-        date:
-          type: string
-          format: date
-          description: New transaction date (YYYY-MM-DD).
-        description:
-          type: [ string, "null" ]
-          description: Updated free-text note (1–255 characters). Pass null to clear the note.
           minLength: 1
           maxLength: 255
 
@@ -1241,25 +1108,6 @@ components:
             - $ref: "#/components/schemas/Currency"
         timezone:
           description: Preferred IANA timezone.
-          allOf:
-            - $ref: "#/components/schemas/Timezone"
-
-    UserPreferencesUpdate:
-      type: object
-      additionalProperties: false
-      description: Patch request — only provided fields are updated. At least one field must be provided.
-      minProperties: 1
-      properties:
-        language:
-          description: New preferred language as a BCP 47 tag.
-          allOf:
-            - $ref: "#/components/schemas/Language"
-        currency:
-          description: New preferred currency as an ISO 4217 three-letter code.
-          allOf:
-            - $ref: "#/components/schemas/Currency"
-        timezone:
-          description: New preferred IANA timezone.
           allOf:
             - $ref: "#/components/schemas/Timezone"
 
