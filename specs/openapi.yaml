@@ -740,10 +740,10 @@ components:
           maxLength: 255
           example: Groceries
         monthlyBudget:
-          type: integer
+          type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Omitted when no budget is set.
+          description: Monthly spending budget for this category, in minor units (e.g. 50000 = €500.00). Null when no budget is set.
           example: 50000
 
     CategoryWrite:
@@ -758,10 +758,10 @@ components:
           maxLength: 255
           example: Restaurants
         monthlyBudget:
-          type: integer
+          type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Monthly spending budget for this category, in minor units. Omit to clear any existing budget.
+          description: Monthly spending budget for this category, in minor units. Send null (or omit) to clear any existing budget.
           example: 50000
 
     Uuid:
@@ -830,8 +830,8 @@ components:
           description: Date on which the transaction occurred (YYYY-MM-DD).
           example: 2026-03-08
         description:
-          type: string
-          description: Free-text note for the transaction (1–255 characters). Omitted when no note is set.
+          type: [ string, "null" ]
+          description: Free-text note for the transaction (1–255 characters). Null when no note is set.
           minLength: 1
           maxLength: 255
           example: Coffee
@@ -864,8 +864,8 @@ components:
           format: date
           description: Date on which the transaction occurred (YYYY-MM-DD).
         description:
-          type: string
-          description: Free-text note for the transaction (1–255 characters). Omit to clear any existing note.
+          type: [ string, "null" ]
+          description: Free-text note for the transaction (1–255 characters). Send null (or omit) to clear any existing note.
           minLength: 1
           maxLength: 255
 
@@ -912,10 +912,10 @@ components:
           minLength: 1
           maxLength: 255
         monthlyBudget:
-          type: integer
+          type: [ integer, "null" ]
           format: int64
           minimum: 0
-          description: Snapshot of the category's current monthly budget, in minor units. Omitted when no budget is set.
+          description: Snapshot of the category's current monthly budget, in minor units. Null when no budget is set.
           example: 50000
         spent:
           type: integer
