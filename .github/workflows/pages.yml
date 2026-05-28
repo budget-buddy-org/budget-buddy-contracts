@@ -1,13 +1,8 @@
 name: Pages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "specs/**"
-      - "docs/**"
-      - ".github/workflows/pages.yml"
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
