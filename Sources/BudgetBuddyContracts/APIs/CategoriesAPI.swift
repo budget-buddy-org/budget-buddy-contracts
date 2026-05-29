@@ -229,21 +229,21 @@ open class CategoriesAPI {
     }
 
     /**
-     Replace category
+     Update category
      
      - parameter categoryId: (path) Category UUID. 
      - parameter categoryWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Category
      */
-    open class func replaceCategory(categoryId: UUID, categoryWrite: CategoryWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> Category {
-        return try await replaceCategoryWithRequestBuilder(categoryId: categoryId, categoryWrite: categoryWrite, apiConfiguration: apiConfiguration).execute().body
+    open class func updateCategory(categoryId: UUID, categoryWrite: CategoryWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> Category {
+        return try await updateCategoryWithRequestBuilder(categoryId: categoryId, categoryWrite: categoryWrite, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     Replace category
+     Update category
      - PUT /v1/categories/{categoryId}
-     - Fully replaces a category's data.
+     - Fully updates a category's data.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -252,7 +252,7 @@ open class CategoriesAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Category> 
      */
-    open class func replaceCategoryWithRequestBuilder(categoryId: UUID, categoryWrite: CategoryWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Category> {
+    open class func updateCategoryWithRequestBuilder(categoryId: UUID, categoryWrite: CategoryWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Category> {
         var localVariablePath = "/v1/categories/{categoryId}"
         let categoryIdPreEscape = "\(APIHelper.mapValueToPathItem(categoryId))"
         let categoryIdPostEscape = categoryIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""

@@ -7,7 +7,7 @@
 
 import Foundation
 
-/** Full replacement of the user&#39;s global preferences. */
+/** Full update of the user&#39;s global preferences. */
 public struct UserPreferencesWrite: Sendable, Codable, Hashable {
 
     public static let languageRule = StringRule(minLength: 2, maxLength: 7, pattern: "/^[a-z]{2,3}(-[A-Z]{2})?$/")

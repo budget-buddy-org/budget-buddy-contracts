@@ -286,20 +286,20 @@ open class UsersAPI {
     }
 
     /**
-     Replace current user's preferences
+     Update current user's preferences
      
      - parameter userPreferencesWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: UserPreferences
      */
-    open class func replaceCurrentUserPreferences(userPreferencesWrite: UserPreferencesWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> UserPreferences {
-        return try await replaceCurrentUserPreferencesWithRequestBuilder(userPreferencesWrite: userPreferencesWrite, apiConfiguration: apiConfiguration).execute().body
+    open class func updateCurrentUserPreferences(userPreferencesWrite: UserPreferencesWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> UserPreferences {
+        return try await updateCurrentUserPreferencesWithRequestBuilder(userPreferencesWrite: userPreferencesWrite, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     Replace current user's preferences
+     Update current user's preferences
      - PUT /v1/users/me/preferences
-     - Fully replaces the authenticated user's global preferences. All fields in the body are applied; the preferences row is created on first call. 
+     - Fully updates the authenticated user's global preferences. All fields in the body are applied; the preferences row is created on first call. 
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -307,7 +307,7 @@ open class UsersAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<UserPreferences> 
      */
-    open class func replaceCurrentUserPreferencesWithRequestBuilder(userPreferencesWrite: UserPreferencesWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<UserPreferences> {
+    open class func updateCurrentUserPreferencesWithRequestBuilder(userPreferencesWrite: UserPreferencesWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<UserPreferences> {
         let localVariablePath = "/v1/users/me/preferences"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userPreferencesWrite, codableHelper: apiConfiguration.codableHelper)

@@ -1,3 +1,9 @@
+## [6.1.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.0.0...v6.1.0) (2026-05-29)
+
+### Features
+
+* rename PUT operationIds from replaceX to updateX ([#116](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/116)) ([9c9246e](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/9c9246ec29c8504f91c8683f3ac8b98a81bd7d77))
+
 ## [6.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v5.0.0...v6.0.0) (2026-05-28)
 
 ### ⚠ BREAKING CHANGES

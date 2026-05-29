@@ -310,21 +310,21 @@ open class TransactionsAPI {
     }
 
     /**
-     Replace transaction
+     Update transaction
      
      - parameter transactionId: (path) Transaction UUID. 
      - parameter transactionWrite: (body)  
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Transaction
      */
-    open class func replaceTransaction(transactionId: UUID, transactionWrite: TransactionWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> Transaction {
-        return try await replaceTransactionWithRequestBuilder(transactionId: transactionId, transactionWrite: transactionWrite, apiConfiguration: apiConfiguration).execute().body
+    open class func updateTransaction(transactionId: UUID, transactionWrite: TransactionWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) async throws(ErrorResponse) -> Transaction {
+        return try await updateTransactionWithRequestBuilder(transactionId: transactionId, transactionWrite: transactionWrite, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
-     Replace transaction
+     Update transaction
      - PUT /v1/transactions/{transactionId}
-     - Fully replaces a transaction's data.
+     - Fully updates a transaction's data.
      - Bearer Token:
        - type: http
        - name: BearerAuth
@@ -333,7 +333,7 @@ open class TransactionsAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Transaction> 
      */
-    open class func replaceTransactionWithRequestBuilder(transactionId: UUID, transactionWrite: TransactionWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Transaction> {
+    open class func updateTransactionWithRequestBuilder(transactionId: UUID, transactionWrite: TransactionWrite, apiConfiguration: BudgetBuddyContractsAPIConfiguration = BudgetBuddyContractsAPIConfiguration.shared) -> RequestBuilder<Transaction> {
         var localVariablePath = "/v1/transactions/{transactionId}"
         let transactionIdPreEscape = "\(APIHelper.mapValueToPathItem(transactionId))"
         let transactionIdPostEscape = transactionIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
