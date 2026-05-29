@@ -155,9 +155,9 @@ paths:
 
     put:
       tags: [ categories ]
-      summary: Replace category
-      description: Fully replaces a category's data.
-      operationId: replaceCategory
+      summary: Update category
+      description: Fully updates a category's data.
+      operationId: updateCategory
       requestBody:
         required: true
         content:
@@ -166,7 +166,7 @@ paths:
               $ref: "#/components/schemas/CategoryWrite"
       responses:
         "200":
-          description: Replaced category
+          description: Updated category
           content:
             application/json:
               schema:
@@ -402,9 +402,9 @@ paths:
 
     put:
       tags: [ transactions ]
-      summary: Replace transaction
-      description: Fully replaces a transaction's data.
-      operationId: replaceTransaction
+      summary: Update transaction
+      description: Fully updates a transaction's data.
+      operationId: updateTransaction
       requestBody:
         required: true
         content:
@@ -413,7 +413,7 @@ paths:
               $ref: "#/components/schemas/TransactionWrite"
       responses:
         "200":
-          description: Replaced transaction
+          description: Updated transaction
           content:
             application/json:
               schema:
@@ -528,11 +528,11 @@ paths:
 
     put:
       tags: [ users ]
-      summary: Replace current user's preferences
+      summary: Update current user's preferences
       description: |
-        Fully replaces the authenticated user's global preferences. All fields in the body are
+        Fully updates the authenticated user's global preferences. All fields in the body are
         applied; the preferences row is created on first call.
-      operationId: replaceCurrentUserPreferences
+      operationId: updateCurrentUserPreferences
       requestBody:
         required: true
         content:
@@ -541,7 +541,7 @@ paths:
               $ref: "#/components/schemas/UserPreferencesWrite"
       responses:
         "200":
-          description: Replaced preferences
+          description: Updated preferences
           content:
             application/json:
               schema:
@@ -1120,7 +1120,7 @@ components:
     UserPreferencesWrite:
       type: object
       additionalProperties: false
-      description: Full replacement of the user's global preferences.
+      description: Full update of the user's global preferences.
       required: [ language, currency, timezone ]
       properties:
         language:
