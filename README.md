@@ -6,6 +6,7 @@
 [![npm](https://img.shields.io/badge/npm-GPR-blue.svg?logo=npm)](https://github.com/budget-buddy-org/budget-buddy-contracts/pkgs/npm/budget-buddy-contracts)
 [![Maven](https://img.shields.io/badge/maven-GPR-blue.svg?logo=apachemaven)](https://github.com/budget-buddy-org/budget-buddy-contracts/packages/2953418)
 [![API Docs](https://img.shields.io/badge/docs-Swagger%20UI-85ea2d.svg?logo=swagger)](https://budget-buddy-org.github.io/budget-buddy-contracts/)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=budget-buddy-org_budget-buddy-contracts&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=budget-buddy-org_budget-buddy-contracts)
 
 📖 **Interactive API reference:** <https://budget-buddy-org.github.io/budget-buddy-contracts/>
 
