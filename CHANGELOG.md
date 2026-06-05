@@ -1,3 +1,9 @@
+## [6.1.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.0...v6.1.1) (2026-06-05)
+
+### Bug Fixes
+
+* **swift:** unwrap regex literal delimiters in generated patterns ([#120](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/120)) ([b7cee25](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/b7cee25658c2ba89727743b6013d7c38da3448bd))
+
 ## [6.1.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.0.0...v6.1.0) (2026-05-29)
 
 ### Features

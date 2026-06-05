@@ -25,7 +25,7 @@ info:
     **Mutations.** The API is PUT-only — PATCH is intentionally not part of the contract. To
     clear a nullable field, send `null` (or omit it) in the PUT body. To remove a resource,
     use `DELETE`.
-  version: "6.1.0"
+  version: "6.1.1"
   contact:
     name: Budget Buddy
     url: https://github.com/budget-buddy-org/budget-buddy-contracts
