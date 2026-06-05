@@ -10,8 +10,8 @@ import Foundation
 /** Full update of the user&#39;s global preferences. */
 public struct UserPreferencesWrite: Sendable, Codable, Hashable {
 
-    public static let languageRule = StringRule(minLength: 2, maxLength: 7, pattern: "/^[a-z]{2,3}(-[A-Z]{2})?$/")
-    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
+    public static let languageRule = StringRule(minLength: 2, maxLength: 7, pattern: "^[a-z]{2,3}(-[A-Z]{2})?$")
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "^[A-Z]{3}$")
     public static let timezoneRule = StringRule(minLength: 1, maxLength: 64, pattern: nil)
     /** Preferred language as a BCP 47 tag. */
     public var language: String

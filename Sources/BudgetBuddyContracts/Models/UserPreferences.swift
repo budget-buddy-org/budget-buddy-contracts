@@ -10,8 +10,8 @@ import Foundation
 /** Global, cross-client preferences for the authenticated user. Used by server-side logic (formatting, future notifications) and by clients that want a consistent locale across sessions.  */
 public struct UserPreferences: Sendable, Codable, Hashable {
 
-    public static let languageRule = StringRule(minLength: 2, maxLength: 7, pattern: "/^[a-z]{2,3}(-[A-Z]{2})?$/")
-    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
+    public static let languageRule = StringRule(minLength: 2, maxLength: 7, pattern: "^[a-z]{2,3}(-[A-Z]{2})?$")
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "^[A-Z]{3}$")
     public static let timezoneRule = StringRule(minLength: 1, maxLength: 64, pattern: nil)
     /** Preferred language as a BCP 47 tag. */
     public var language: String
