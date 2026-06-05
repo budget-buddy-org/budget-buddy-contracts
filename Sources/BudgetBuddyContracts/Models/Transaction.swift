@@ -10,7 +10,7 @@ import Foundation
 public struct Transaction: Sendable, Codable, Hashable {
 
     public static let amountRule = NumericRule<Int64>(minimum: 1, exclusiveMinimum: false, maximum: nil, exclusiveMaximum: false, multipleOf: nil)
-    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[A-Z]{3}$/")
+    public static let currencyRule = StringRule(minLength: nil, maxLength: nil, pattern: "^[A-Z]{3}$")
     public static let descriptionRule = StringRule(minLength: 1, maxLength: 255, pattern: nil)
     /** Unique identifier for the transaction. */
     public var id: UUID

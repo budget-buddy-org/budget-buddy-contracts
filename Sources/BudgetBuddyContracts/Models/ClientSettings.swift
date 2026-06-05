@@ -10,7 +10,7 @@ import Foundation
 /** Per-client UI/UX settings (themes, font sizes, layout preferences, etc.) for a single client of the authenticated user.  */
 public struct ClientSettings: Sendable, Codable, Hashable {
 
-    public static let clientIdRule = StringRule(minLength: nil, maxLength: nil, pattern: "/^[a-z0-9-]{1,32}$/")
+    public static let clientIdRule = StringRule(minLength: nil, maxLength: nil, pattern: "^[a-z0-9-]{1,32}$")
     /** The client this settings row belongs to (matches the path parameter). */
     public var clientId: String
     /** The stored settings payload. */

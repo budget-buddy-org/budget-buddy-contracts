@@ -11,7 +11,7 @@
     "lint": "spectral lint specs/openapi.yaml --ruleset .spectral.yaml",
     "generate:ts": "openapi-ts",
     "generate:java": "openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml --additional-properties=artifactVersion=$(node -p \"require('./package.json').version\")",
-    "generate:swift": "openapi-generator-cli generate -i specs/openapi.yaml -g swift6 -o /tmp/budget-buddy-swift -c config/swift6.yaml && rsync -a --delete /tmp/budget-buddy-swift/Sources/BudgetBuddyContracts/ Sources/BudgetBuddyContracts/",
+    "generate:swift": "openapi-generator-cli generate -i specs/openapi.yaml -g swift6 -o /tmp/budget-buddy-swift -c config/swift6.yaml && rsync -a --delete /tmp/budget-buddy-swift/Sources/BudgetBuddyContracts/ Sources/BudgetBuddyContracts/ && node scripts/normalize-swift-patterns.mjs",
     "generate": "pnpm run generate:ts && pnpm run generate:java && pnpm run generate:swift",
     "release": "semantic-release",
     "release:dry-run": "semantic-release --dry-run"
