@@ -9,6 +9,10 @@ generated/
 .openapi-generator/
 .openapi-generator-ignore
 
+# Swift Package Manager build artifacts (created by `swift build` when verifying
+# the generated Sources locally — never committed).
+.build/
+
 ### macOS ###
 # General
 .DS_Store
