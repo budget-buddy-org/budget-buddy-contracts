@@ -24,7 +24,7 @@
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@hey-api/openapi-ts": "^0.98.2",
-    "@openapitools/openapi-generator-cli": "^2.34.0",
+    "@openapitools/openapi-generator-cli": "^2.38.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/exec": "^7.1.0",
