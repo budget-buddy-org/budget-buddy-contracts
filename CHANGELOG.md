@@ -1,3 +1,9 @@
+## [6.1.2](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.1...v6.1.2) (2026-06-15)
+
+### Bug Fixes
+
+* address SonarQube issues in docs and publish workflow ([#128](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/128)) ([94d199b](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/94d199b62ec86e14d7e82dcc171ee1b4d5959794))
+
 ## [6.1.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.0...v6.1.1) (2026-06-05)
 
 ### Bug Fixes
