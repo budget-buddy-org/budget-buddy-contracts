@@ -12,13 +12,14 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   publish-typescript:
     name: Publish TypeScript
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
@@ -59,6 +60,8 @@ jobs:
     name: Publish Java
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
