@@ -9,6 +9,7 @@
     "commitlint": "commitlint --edit",
     "validate": "openapi-generator-cli validate -i specs/openapi.yaml",
     "lint": "spectral lint specs/openapi.yaml --ruleset .spectral.yaml",
+    "mock": "prism mock specs/openapi.yaml -p 4010",
     "generate:ts": "openapi-ts",
     "generate:java": "openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml --additional-properties=artifactVersion=$(node -p \"require('./package.json').version\")",
     "generate:swift": "openapi-generator-cli generate -i specs/openapi.yaml -g swift6 -o /tmp/budget-buddy-swift -c config/swift6.yaml && rsync -a --delete /tmp/budget-buddy-swift/Sources/BudgetBuddyContracts/ Sources/BudgetBuddyContracts/ && node scripts/normalize-swift-patterns.mjs",
@@ -17,24 +18,26 @@
     "release:dry-run": "semantic-release --dry-run"
   },
   "engines": {
-    "node": ">=24",
-    "pnpm": ">=10"
+    "node": ">=24.18.0",
+    "pnpm": ">=12"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
-    "@hey-api/openapi-ts": "^0.98.2",
-    "@openapitools/openapi-generator-cli": "^2.39.0",
-    "@semantic-release/changelog": "^6.0.3",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@hey-api/openapi-ts": "^0.99.0",
+    "@openapitools/openapi-generator-cli": "^2.42.2",
+    "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/exec": "^7.1.0",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.8",
-    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/git": "^11.0.1",
+    "@semantic-release/github": "^12.0.11",
+    "@semantic-release/npm": "^13.2.0",
     "@semantic-release/release-notes-generator": "^14.1.1",
-    "@stoplight/spectral-cli": "^6.16.0",
+    "@stoplight/prism-cli": "5.16.0",
+    "@stoplight/spectral-cli": "^6.17.1",
     "husky": "^9.1.7",
-    "semantic-release": "^25.0.5"
+    "semantic-release": "^25.0.9",
+    "typescript": "6.0.3"
   },
-  "packageManager": "pnpm@11.4.0+sha512.f0febc7e37552ab485494a914241b338e0b3580b93d54ce31f00933015880863129038a1b4ae4e414a0ee63ac35bf21197e990172c4a68256450b5636310968f"
+  "packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3"
 }

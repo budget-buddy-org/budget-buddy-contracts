@@ -35,8 +35,8 @@ The core of this project is the OpenAPI specification located in `specs/openapi.
 ## 🛠 Developer Guide
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v24+)
-- [pnpm](https://pnpm.io/) — pinned via Corepack from the `packageManager` field; run `corepack enable` once
+- [Node.js](https://nodejs.org/) (v24.18+; CI uses v26 LTS)
+- [pnpm](https://pnpm.io/) v12 — pinned via Corepack from the `packageManager` field; run `corepack enable` once
 
 ```bash
 pnpm install   # installs Spectral and openapi-generator-cli as devDeps
