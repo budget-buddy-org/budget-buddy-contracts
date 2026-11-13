@@ -1,3 +1,10 @@
+## [6.1.3](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.2...v6.1.3) (2026-11-13)
+
+### Bug Fixes
+
+* restore release notes generation ([#149](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/149)) ([0a67727](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/0a677275eef03f1b347039930f8d0c7d206766a6))
+* update contract generators and CI toolchain ([#148](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/148)) ([f7896ac](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/f7896ac1557ee1c678807dcc8a9aedfa78e45943))
+
 ## [6.1.2](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.1...v6.1.2) (2026-06-15)
 
 ### Bug Fixes
