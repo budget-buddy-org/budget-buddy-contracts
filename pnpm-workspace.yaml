@@ -1,5 +1,6 @@
 allowBuilds:
   "@nestjs/core": true
   "@openapitools/openapi-generator-cli": true
+  "@scarf/scarf": false
 minimumReleaseAgeExclude:
-  - '@openapitools/openapi-generator-cli@2.39.0'
+  - "@semantic-release/github@12.0.11"

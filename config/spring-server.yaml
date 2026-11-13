@@ -16,6 +16,9 @@ useTags: true
 useSpringBoot4: true
 useJakartaEe: true
 openApiNullable: false
+# Keep Jackson inclusion and null handling controlled by the application ObjectMapper.
+generateJsonIncludeAnnotations: false
+generateJsonSetterNullsAnnotations: false
 skipOperationExample: true
 sourceFolder: src/main/java
 useJspecify: true

@@ -48,7 +48,7 @@ Semver: **MAJOR** = breaking (removed endpoint, changed required field, renamed 
 - `config/spring-server.yaml`, `config/swift6.yaml` — Java/Swift generator options
 - `config/typescript-package.json` — `package.json` template for the published TS package
 - `config/maven-settings.xml` — Maven creds via `${env.GITHUB_ACTOR}`/`${env.GITHUB_TOKEN}` (no hardcoded secrets)
-- `openapitools.json` — pins openapi-generator 7.21.0 (needed for OAS 3.1 `type: [string, "null"]`)
+- `openapitools.json` — pins openapi-generator 7.27.0 (needed for OAS 3.1 `type: [string, "null"]`)
 - `.spectral.yaml` — enforces `operationId` (error) + tags, tag descriptions, 500 response, per-property `description` (warn)
 - `.releaserc.cjs` — semantic-release config; plugin order matters: changelog → npm (version bump only) → swift prepare → git commit → github release
 - `.github/workflows/` — `validate.yml` (PR lint/validate/smoke-gen); `release.yml` (semantic-release on `main`, uses a GitHub App token to bypass the branch ruleset, `GITHUB_TOKEN` scoped `contents: read`); `publish.yml` (`release: published` → publish, `workflow_dispatch` for retries); `commitlint.yml`
