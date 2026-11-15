@@ -1,50 +1,25 @@
 name: Release
-
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Preview release from this ref
+        type: boolean
+        default: true
 permissions:
   contents: read
-
+  packages: read
 jobs:
+  validate:
+    uses: budget-buddy-org/ci-workflows/.github/workflows/contracts-validation.yml@b70aceef21adb495e9e2d03fced5c7abb8b6aa44
   release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        id: app-token
-        with:
-          client-id: ${{ secrets.RELEASE_BOT_ID }}
-          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "26"
-          cache: "pnpm"
-
-      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
-        with:
-          java-version: "25"
-          distribution: "temurin"
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Lint spec
-        run: pnpm run lint
-
-      - name: Validate spec
-        run: pnpm run validate
-
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: pnpm exec semantic-release
+    needs: validate
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry-run)
+    uses: budget-buddy-org/ci-workflows/.github/workflows/release.yml@b70aceef21adb495e9e2d03fced5c7abb8b6aa44
+    with:
+      dry-run: ${{ github.event_name == 'workflow_dispatch' }}
+    secrets:
+      RELEASE_BOT_ID: ${{ secrets.RELEASE_BOT_ID }}
+      RELEASE_BOT_PRIVATE_KEY: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
