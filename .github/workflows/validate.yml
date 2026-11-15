@@ -12,45 +12,13 @@ on:
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - "tsconfig.json"
-      - ".github/workflows/validate.yml"
+      - ".github/workflows/**"
 
 permissions:
   contents: read
+  packages: read
+
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "26"
-          cache: "pnpm"
-
-      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
-        with:
-          java-version: "25"
-          distribution: "temurin"
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Lint spec
-        run: pnpm run lint
-
-      - name: Validate spec
-        run: pnpm run validate
-
-      - name: Smoke-test TypeScript generation
-        run: pnpm run generate:ts
-
-      - name: Typecheck generated TypeScript client
-        run: pnpm exec tsc --noEmit --emitDeclarationOnly false
-
-      - name: Smoke-test Java generation
-        run: pnpm run generate:java
-
-      - name: Compile generated Java server stubs
-        run: mvn --file generated/java/pom.xml --no-transfer-progress -DskipTests package
+    uses: budget-buddy-org/ci-workflows/.github/workflows/contracts-validation.yml@1736e615609d211e1cdbe74314e4199faed158b6

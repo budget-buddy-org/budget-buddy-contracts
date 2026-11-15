@@ -26,19 +26,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "26"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@budget-buddy-org"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-node@1736e615609d211e1cdbe74314e4199faed158b6
 
       - name: Extract version from package.json
         id: version
@@ -69,22 +57,8 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "26"
-          cache: "pnpm"
-
-      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
-        with:
-          java-version: "25"
-          distribution: "temurin"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-java@1736e615609d211e1cdbe74314e4199faed158b6
+      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-node@1736e615609d211e1cdbe74314e4199faed158b6
 
       - name: Generate Java client
         run: pnpm run generate:java
