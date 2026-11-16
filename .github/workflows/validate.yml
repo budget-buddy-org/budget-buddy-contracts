@@ -21,4 +21,4 @@ permissions:
 
 jobs:
   validate:
-    uses: budget-buddy-org/ci-workflows/.github/workflows/contracts-validation.yml@ad780d45400f3a82e82a817a8ad4cd1f5f89c989
+    uses: budget-buddy-org/ci-workflows/.github/workflows/contracts-validation.yml@235bd4425fe8005786d300dee35a35bd2ba90b96
