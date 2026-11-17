@@ -26,7 +26,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-node@24c274c00d122d32765bf3248ed84fe824274912
+      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-node@4652a0281ab4c381ff1bd8b60c0cf8f6fd9d76fc
 
       - name: Extract version from package.json
         id: version
@@ -57,8 +57,8 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-java@24c274c00d122d32765bf3248ed84fe824274912
-      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-node@24c274c00d122d32765bf3248ed84fe824274912
+      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-java@4652a0281ab4c381ff1bd8b60c0cf8f6fd9d76fc
+      - uses: budget-buddy-org/ci-workflows/.github/actions/setup-node@4652a0281ab4c381ff1bd8b60c0cf8f6fd9d76fc
 
       - name: Generate Java client
         run: pnpm run generate:java
