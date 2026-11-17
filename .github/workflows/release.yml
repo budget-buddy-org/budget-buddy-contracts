@@ -13,11 +13,11 @@ permissions:
   packages: read
 jobs:
   validate:
-    uses: budget-buddy-org/ci-workflows/.github/workflows/contracts-validation.yml@306f06148d1b17242b36121967613ded7380ddaf
+    uses: budget-buddy-org/ci-workflows/.github/workflows/contracts-validation.yml@f7140d62236354f8698c220180658c573fa2b6ec
   release:
     needs: validate
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry-run)
-    uses: budget-buddy-org/ci-workflows/.github/workflows/release.yml@306f06148d1b17242b36121967613ded7380ddaf
+    uses: budget-buddy-org/ci-workflows/.github/workflows/release.yml@f7140d62236354f8698c220180658c573fa2b6ec
     with:
       profile: contracts
       dry-run: ${{ github.event_name == 'workflow_dispatch' }}
