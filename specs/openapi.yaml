@@ -724,6 +724,26 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Problem"
+          examples:
+            validationError:
+              summary: Per-field validation failure (errors[] present)
+              value:
+                type: "https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/validation-error.md"
+                title: "Validation Error"
+                status: 400
+                detail: "Request contains invalid fields."
+                errors:
+                  - field: "amount"
+                    message: "must be greater than or equal to 1"
+                  - field: "currency"
+                    message: "must match \"^[A-Z]{3}$\""
+            badRequest:
+              summary: Semantic / cross-field validation failure (no errors[])
+              value:
+                type: "https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/bad-request.md"
+                title: "Bad Request"
+                status: 400
+                detail: "Range between 'from' and 'to' must not exceed 24 months."
 
     Unauthorized:
       description: Authentication failed
@@ -731,6 +751,14 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Problem"
+          examples:
+            unauthorized:
+              summary: Missing or invalid bearer token
+              value:
+                type: "https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/unauthorized.md"
+                title: "Unauthorized"
+                status: 401
+                detail: "Bearer token is missing or invalid."
 
     NotFound:
       description: Resource not found
@@ -738,6 +766,14 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Problem"
+          examples:
+            notFound:
+              summary: Resource does not exist or belongs to another user
+              value:
+                type: "https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/not-found.md"
+                title: "Not Found"
+                status: 404
+                detail: "Category 550e8400-e29b-41d4-a716-446655440000 not found."
 
     InternalServerError:
       description: Unexpected server error
@@ -745,6 +781,14 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Problem"
+          examples:
+            internalError:
+              summary: Unexpected server-side failure
+              value:
+                type: "https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/internal-error.md"
+                title: "Internal Server Error"
+                status: 500
+                detail: "An unexpected error occurred. Please try again later."
 
   schemas:
     Category:
@@ -1044,7 +1088,19 @@ components:
         type:
           type: string
           format: uri
-          description: URI that identifies the problem type. Defaults to "about:blank" when not set.
+          description: |
+            URI that identifies the problem type. When set by this API it points to a human-readable
+            page documenting the error. Possible values:
+
+            | URI | HTTP status | Description |
+            |-----|-------------|-------------|
+            | `https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/validation-error.md` | 400 | Per-field validation failure; `errors[]` is populated |
+            | `https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/bad-request.md` | 400 | Semantic / cross-field violation; no `errors[]` |
+            | `https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/unauthorized.md` | 401 | Missing, expired, or invalid bearer token |
+            | `https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/not-found.md` | 404 | Resource does not exist or belongs to another user |
+            | `https://github.com/budget-buddy-org/budget-buddy-contracts/blob/main/docs/errors/internal-error.md` | 500 | Unexpected server-side failure |
+
+            Defaults to `"about:blank"` when not set.
           default: "about:blank"
         title:
           type: string
