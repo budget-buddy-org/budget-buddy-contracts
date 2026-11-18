@@ -37,7 +37,7 @@ Releases are fully automated via **semantic-release** on push to `main` — neve
 
 1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
 2. `pnpm run lint && pnpm run validate`
-3. Open a PR with a conventional-commit title. **PRs are squash-merged, so the PR title is what lands on `main` and what semantic-release reads** for the next version. Individual commits are commitlint-validated but don't affect versioning.
+3. Open a PR with a conventional-commit title. **PRs are squash-merged, so the PR title is what lands on `main` and what semantic-release reads** for the next version. Shared CI validates PR titles; individual commits are free form. Use `!` in the title for breaking changes.
 4. CI determines the version, bumps the files, regenerates + commits Swift sources, tags, and creates the GitHub Release — which triggers the Publish workflow (TS→npm, Java→Maven in parallel).
 
 Semver: **MAJOR** = breaking (removed endpoint, changed required field, renamed operationId); **MINOR** = additive (new endpoint/optional field); **PATCH** = non-breaking (config tweak, docs). Bump whenever generated output changes; CI/tooling-only changes need none.
@@ -50,7 +50,7 @@ Semver: **MAJOR** = breaking (removed endpoint, changed required field, renamed 
 - `config/maven-settings.xml` — Maven creds via `${env.GITHUB_ACTOR}`/`${env.GITHUB_TOKEN}` (no hardcoded secrets)
 - `openapitools.json` — pins openapi-generator 7.27.0 (needed for OAS 3.1 `type: [string, "null"]`)
 - `.spectral.yaml` — enforces `operationId` (error) + tags, tag descriptions, 500 response, per-property `description` (warn)
-- `.releaserc.cjs` — semantic-release config; plugin order matters: changelog → npm (version bump only) → swift prepare → git commit → github release
+- The shared `contracts` release profile in `ci-workflows` owns release tooling and plugin order: changelog → npm → Swift preparation → git commit → GitHub release
 - `.github/workflows/` — `validate.yml` (PR lint/validate/smoke-gen); `release.yml` (semantic-release on `main`, uses a GitHub App token to bypass the branch ruleset, `GITHUB_TOKEN` scoped `contents: read`); `publish.yml` (`release: published` → publish, `workflow_dispatch` for retries); `commitlint.yml`
 
 ## Spec conventions
