@@ -23,7 +23,7 @@
     "@openapitools/openapi-generator-cli": "^2.42.2",
     "@stoplight/prism-cli": "5.16.0",
     "@stoplight/spectral-cli": "^6.17.1",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "packageManager": "pnpm@12.21.0"
 }
