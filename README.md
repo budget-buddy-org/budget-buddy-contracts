@@ -115,3 +115,10 @@ Add to your `pom.xml` (requires Maven server credentials for GitHub Packages):
 - **Errors:** Every error response uses `application/problem+json` per **RFC 9457**. Field-level validation errors are surfaced as `Problem.errors[]` on `400` responses.
 - **Pagination:** List endpoints accept `page` (zero-based, default 0) and `size` (1–200, default 20) query parameters; the response carries a `PaginationMeta` with `page`, `size`, and `total`.
 - **Auth:** Every endpoint requires a Bearer JWT issued by the OIDC provider — there are no auth endpoints in this spec.
+
+### TypeScript tooling
+
+Compilation uses TypeScript 7 through the `@typescript/native` npm alias.
+The `typescript` alias supplies Microsoft's TypeScript 6 compatibility API for
+tools that require it (the client generator and ESLint). Keep both until those
+tools support the native compiler API.
