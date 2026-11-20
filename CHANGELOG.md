@@ -1,3 +1,9 @@
+## [6.1.4](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.3...v6.1.4) (2026-11-20)
+
+### Bug Fixes
+
+* **deps:** update contracts tooling with TypeScript 7 compatibility ([#161](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/161)) ([783b4b9](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/783b4b91d7dd06f5796ffea5ff202aa5bb880702))
+
 ## [6.1.3](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.2...v6.1.3) (2026-11-13)
 
 ### Bug Fixes
