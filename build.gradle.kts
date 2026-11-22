@@ -1,5 +1,3 @@
-import org.gradle.api.publish.tasks.GenerateModuleMetadata
-
 plugins {
   `java-library`
   `maven-publish`
@@ -23,11 +21,6 @@ java {
   withSourcesJar()
 }
 
-tasks.withType<GenerateModuleMetadata>().configureEach {
-  // The consumer's BOM resolves the versionless dependencies in the Maven POM.
-  enabled = false
-}
-
 sourceSets {
   main {
     java.srcDir("generated/java/src/main/java")
@@ -47,8 +40,9 @@ val apiDependencies =
     )
 
 dependencies {
-  compileOnly(platform("org.springframework.boot:spring-boot-dependencies:4.1.3"))
-  apiDependencies.forEach { compileOnly(it) }
+  // Publish the BOM so the versionless API dependencies form a valid Maven POM.
+  api(platform("org.springframework.boot:spring-boot-dependencies:4.1.3"))
+  apiDependencies.forEach { api(it) }
 }
 
 publishing {
@@ -60,16 +54,6 @@ publishing {
         name.set("budget-buddy-contracts")
         description.set("Generated Spring API contracts for Budget Buddy")
         url.set("https://github.com/budget-buddy-org/budget-buddy-contracts")
-
-        withXml {
-          val dependenciesNode = asNode().appendNode("dependencies")
-          apiDependencies.forEach { coordinate ->
-            val (dependencyGroup, dependencyArtifact) = coordinate.split(":")
-            val dependency = dependenciesNode.appendNode("dependency")
-            dependency.appendNode("groupId", dependencyGroup)
-            dependency.appendNode("artifactId", dependencyArtifact)
-          }
-        }
       }
     }
   }

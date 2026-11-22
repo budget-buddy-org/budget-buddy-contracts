@@ -83,9 +83,10 @@ Add to your `pom.xml` (requires Maven server credentials for GitHub Packages):
 ```
 
 The Java artifact requires Java 25 and is intended for Spring Boot 4 applications.
-Its Maven POM declares Spring, Jakarta Annotation and Servlet, Jakarta
-Validation, JSpecify, and Jackson annotations without versions, so the
-consuming application's BOM manages them.
+Its Maven POM imports the Spring Boot 4.1.3 BOM to manage its versionless Spring,
+Jakarta Annotation and Servlet, Jakarta Validation, JSpecify, and Jackson
+annotation dependencies. A consuming application's dependency management can
+override transitive dependency versions.
 Jackson 3 retains the `com.fasterxml.jackson.annotation` API package; generated
 sources use that annotation API and Jackson 3 databind at runtime. The published
 artifact is built and published with Gradle.
