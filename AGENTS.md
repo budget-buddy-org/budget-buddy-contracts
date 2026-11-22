@@ -11,7 +11,7 @@ API-first contracts for Budget Buddy. `specs/openapi.yaml` (OpenAPI 3.1.0, singl
 | Target | Generator | Output | Published to |
 |--------|-----------|--------|-------------|
 | TypeScript | `@hey-api/openapi-ts` | `generated/typescript/` | GitHub Packages (npm) |
-| Java Spring Boot | `openapi-generator` (`spring`) | `generated/java/` | GitHub Packages (Maven) |
+| Java Spring Boot | `openapi-generator` (`spring`), Gradle `maven-publish` | `generated/java/` | GitHub Packages (Maven) |
 | iOS/Swift | `openapi-generator` (`swift6`) | `Sources/BudgetBuddyContracts/` | Git repo (SPM) |
 
 `generated/` is gitignored (ephemeral CI/local artifacts). `Sources/BudgetBuddyContracts/` is committed — SPM requires sources tracked in git.
@@ -27,18 +27,19 @@ pnpm run generate:ts    # → generated/typescript/
 pnpm run generate:java  # → generated/java/
 pnpm run generate:swift # → Sources/BudgetBuddyContracts/ (commit this)
 pnpm run generate       # all three
+./gradlew build         # compile the generated Java artifact (run after generate:java)
 ```
 
 ## Versioning & release
 
-Single unified version across all three artifacts. The git tag is the source of truth; `package.json` `version` and `specs/openapi.yaml` `info.version` are the in-repo copies and must match. Config files carry no version field — CI injects it from the tag at publish time (local scripts inject from `package.json`).
+Single unified version across all three artifacts. The git tag is the source of truth; `package.json` `version` and `specs/openapi.yaml` `info.version` are the in-repo copies and must match. Config files carry no version field — CI passes the release version to Gradle from `package.json`.
 
 Releases are fully automated via **semantic-release** on push to `main` — never bump versions, tag, or run `generate:swift` manually:
 
 1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
 2. `pnpm run lint && pnpm run validate`
 3. Open a PR with a conventional-commit title. **PRs are squash-merged, so the PR title is what lands on `main` and what semantic-release reads** for the next version. Shared CI validates PR titles; individual commits are free form. Use `!` in the title for breaking changes.
-4. CI determines the version, bumps the files, regenerates + commits Swift sources, tags, and creates the GitHub Release — which triggers the Publish workflow (TS→npm, Java→Maven in parallel).
+4. CI determines the version, bumps the files, regenerates + commits Swift sources, tags, and creates the GitHub Release — which triggers the Publish workflow (TS→npm, Java→Maven via Gradle in parallel).
 
 Semver: **MAJOR** = breaking (removed endpoint, changed required field, renamed operationId); **MINOR** = additive (new endpoint/optional field); **PATCH** = non-breaking (config tweak, docs). Bump whenever generated output changes; CI/tooling-only changes need none.
 
@@ -47,7 +48,7 @@ Semver: **MAJOR** = breaking (removed endpoint, changed required field, renamed 
 - `openapi-ts.config.ts` — TypeScript generation (types + SDK + fetch client)
 - `config/spring-server.yaml`, `config/swift6.yaml` — Java/Swift generator options
 - `config/typescript-package.json` — `package.json` template for the published TS package
-- `config/maven-settings.xml` — Maven creds via `${env.GITHUB_ACTOR}`/`${env.GITHUB_TOKEN}` (no hardcoded secrets)
+- `build.gradle.kts` and `gradle/wrapper/` — Java 25 compilation and Maven publication; dependency versions are supplied by the consuming application's BOM
 - `openapitools.json` — pins openapi-generator 7.27.0 (needed for OAS 3.1 `type: [string, "null"]`)
 - `.spectral.yaml` — enforces `operationId` (error) + tags, tag descriptions, 500 response, per-property `description` (warn)
 - The shared `contracts` release profile in `budget-buddy-workflows` owns release tooling and plugin order: changelog → npm → Swift preparation → git commit → GitHub release
