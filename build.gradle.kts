@@ -1,3 +1,6 @@
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.publish.tasks.GenerateModuleMetadata
+
 plugins {
   `java-library`
   `maven-publish`
@@ -21,6 +24,11 @@ java {
   withSourcesJar()
 }
 
+tasks.withType<GenerateModuleMetadata>().configureEach {
+  // The Maven POM carries resolved versions for these compile-only API dependencies.
+  enabled = false
+}
+
 sourceSets {
   main {
     java.srcDir("generated/java/src/main/java")
@@ -40,9 +48,8 @@ val apiDependencies =
     )
 
 dependencies {
-  // Publish the BOM so the versionless API dependencies form a valid Maven POM.
-  api(platform("org.springframework.boot:spring-boot-dependencies:4.1.3"))
-  apiDependencies.forEach { api(it) }
+  compileOnly(platform("org.springframework.boot:spring-boot-dependencies:4.1.3"))
+  apiDependencies.forEach { compileOnly(it) }
 }
 
 publishing {
@@ -54,6 +61,29 @@ publishing {
         name.set("budget-buddy-contracts")
         description.set("Generated Spring API contracts for Budget Buddy")
         url.set("https://github.com/budget-buddy-org/budget-buddy-contracts")
+
+        withXml {
+          val resolvedVersions =
+              configurations.getByName("compileClasspath")
+                  .incoming.resolutionResult.allComponents
+                  .mapNotNull { component ->
+                    val module = component.id as? ModuleComponentIdentifier ?: return@mapNotNull null
+                    "${module.group}:${module.module}" to module.version
+                  }
+                  .toMap()
+
+          val dependenciesNode = asNode().appendNode("dependencies")
+          apiDependencies.forEach { coordinate ->
+            val (dependencyGroup, dependencyArtifact) = coordinate.split(":")
+            val version =
+                resolvedVersions[coordinate]
+                    ?: throw GradleException("No resolved version for published API dependency '$coordinate'")
+            val dependency = dependenciesNode.appendNode("dependency")
+            dependency.appendNode("groupId", dependencyGroup)
+            dependency.appendNode("artifactId", dependencyArtifact)
+            dependency.appendNode("version", version)
+          }
+        }
       }
     }
   }
