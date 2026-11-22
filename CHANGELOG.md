@@ -1,3 +1,13 @@
+## [7.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.4...v7.0.0) (2026-11-22)
+
+### ⚠ BREAKING CHANGES
+
+* publish Java contracts with Jackson 3 and records (#166)
+
+### Features
+
+* publish Java contracts with Jackson 3 and records ([#166](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/166)) ([c36d08e](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/c36d08edc8092e9e3915ce280136e0fc762aa8f8))
+
 ## [6.1.4](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.3...v6.1.4) (2026-11-20)
 
 ### Bug Fixes
