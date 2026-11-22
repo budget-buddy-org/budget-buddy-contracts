@@ -2,19 +2,14 @@
 # Consumers: Java Spring Boot backend — implements the generated API interfaces
 # Published to GitHub Packages (Maven) as com.budgetbuddy:budget-buddy-contracts
 #
-# Note: generateSupportingFiles is intentionally not set here (defaults to true).
-# The backend's Gradle task sets it to false because Gradle owns the project wrapper;
-# here we need the generated pom.xml so CI can run `mvn deploy`.
+# Coordinates in this config are for generated metadata. Gradle owns Maven publication.
 groupId: com.budgetbuddy
 artifactId: budget-buddy-contracts
-# artifactVersion is intentionally absent — CI injects it from the git tag;
-# local generation (npm run generate:java) injects it from package.json version.
 apiPackage: com.budget.buddy.budget_buddy_contracts.generated.api
 modelPackage: com.budget.buddy.budget_buddy_contracts.generated.model
 interfaceOnly: true
 useTags: true
 useSpringBoot4: true
-useJakartaEe: true
 openApiNullable: false
 # Keep Jackson inclusion and null handling controlled by the application ObjectMapper.
 generateJsonIncludeAnnotations: false
@@ -22,3 +17,8 @@ generateJsonSetterNullsAnnotations: false
 skipOperationExample: true
 sourceFolder: src/main/java
 useJspecify: true
+useJackson3: true
+useRecords: true
+useSpringController: true
+annotationLibrary: none
+documentationProvider: none

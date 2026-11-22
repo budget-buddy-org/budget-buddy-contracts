@@ -5,6 +5,10 @@ node_modules/
 # Exception: Sources/BudgetBuddyContracts/ is tracked (required for Swift Package Manager)
 generated/
 
+# Gradle build outputs
+.gradle/
+build/
+
 # openapi-generator metadata
 .openapi-generator/
 .openapi-generator-ignore
