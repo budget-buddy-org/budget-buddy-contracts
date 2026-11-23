@@ -1,3 +1,9 @@
+## [7.0.2](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v7.0.1...v7.0.2) (2026-11-23)
+
+### Bug Fixes
+
+* **deps:** align Java contracts with Spring Framework 7.1.0 ([#168](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/168)) ([33bfc40](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/33bfc408fbdd2fc8eafee1bda9994e96593a7061))
+
 ## [7.0.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v7.0.0...v7.0.1) (2026-11-23)
 
 ### Bug Fixes
