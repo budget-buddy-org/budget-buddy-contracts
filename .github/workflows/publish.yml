@@ -26,7 +26,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-node@b7507539ebca6a6c2ba7da83a40033527fc5e85f
+      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-node@d420795830022b06f9580ceb7f0b888bd5a5ec61
 
       - name: Extract version from package.json
         id: version
@@ -57,8 +57,8 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
 
-      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-java@b7507539ebca6a6c2ba7da83a40033527fc5e85f
-      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-node@b7507539ebca6a6c2ba7da83a40033527fc5e85f
+      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-java@d420795830022b06f9580ceb7f0b888bd5a5ec61
+      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-node@d420795830022b06f9580ceb7f0b888bd5a5ec61
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a
 
       - name: Extract version from package.json
