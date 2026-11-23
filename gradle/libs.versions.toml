@@ -1,5 +1,5 @@
 [versions]
-spring = "7.0.11"
+spring = "7.1.0"
 
 [libraries]
 spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
