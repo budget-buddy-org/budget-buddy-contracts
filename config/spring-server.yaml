@@ -8,6 +8,7 @@ artifactId: budget-buddy-contracts
 apiPackage: com.budget.buddy.budget_buddy_contracts.generated.api
 modelPackage: com.budget.buddy.budget_buddy_contracts.generated.model
 interfaceOnly: true
+hideGenerationTimestamp: true
 useTags: true
 useSpringBoot4: true
 openApiNullable: false

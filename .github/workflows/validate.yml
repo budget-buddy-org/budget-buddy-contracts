@@ -15,6 +15,9 @@ on:
       - "build.gradle.kts"
       - "settings.gradle.kts"
       - "gradle/**"
+      - "gradle.lockfile"
+      - "scripts/**"
+      - "tests/java-consumer/**"
       - "gradlew"
       - "gradlew.bat"
       - ".github/workflows/**"
@@ -26,21 +29,4 @@ permissions:
 
 jobs:
   validate:
-    uses: budget-buddy-org/budget-buddy-workflows/.github/workflows/contracts-validation.yml@6ca650db05a934bd612faac664149938e763cfed
-
-  validate-java-publication:
-    name: Validate Java publication
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-java@6ca650db05a934bd612faac664149938e763cfed
-      - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-node@6ca650db05a934bd612faac664149938e763cfed
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a
-
-      - name: Generate Java contracts
-        run: pnpm run generate:java
-
-      - name: Compile Java publication
-        run: ./gradlew build
+    uses: budget-buddy-org/budget-buddy-workflows/.github/workflows/contracts-validation.yml@7494014b779e158da778a98d4174575757ef176d

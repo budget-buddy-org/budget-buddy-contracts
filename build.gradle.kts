@@ -21,9 +21,16 @@ java {
   withSourcesJar()
 }
 
+val generateJavaContracts = tasks.register<Exec>("generateJavaContracts") {
+  inputs.dir("specs")
+  inputs.files("config/spring-server.yaml", "openapitools.json", "package.json", "pnpm-lock.yaml")
+  outputs.dir("generated/java/src/main/java")
+  commandLine("env", "pnpm", "run", "generate:java")
+}
+
 sourceSets {
   main {
-    java.srcDir("generated/java/src/main/java")
+    java.srcDir(generateJavaContracts)
   }
 }
 

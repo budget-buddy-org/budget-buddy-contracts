@@ -88,6 +88,8 @@ Add to your `pom.xml` (requires Maven server credentials for GitHub Packages):
 </dependency>
 ```
 
+After installing the pnpm dependencies, run `./gradlew build` with Java 25 to generate and compile the Java contracts. Run `sh scripts/verify-java-publication.sh` to compile a consumer against the published Maven POM in an isolated local repository.
+
 The Java 25 JAR contains the generated Spring MVC interfaces, models, and supporting classes.
 Gradle and Maven consumers receive the Spring Framework modules, Jakarta Validation API,
 JSpecify, and Jackson annotations used by the public contracts. The consuming application

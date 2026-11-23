@@ -27,7 +27,7 @@ pnpm run generate:ts    # → generated/typescript/
 pnpm run generate:java  # → generated/java/
 pnpm run generate:swift # → Sources/BudgetBuddyContracts/ (commit this)
 pnpm run generate       # all three
-./gradlew build         # compile the generated Java artifact (run after generate:java)
+./gradlew build         # generate and compile the Java artifact
 ```
 
 ## Versioning & release
