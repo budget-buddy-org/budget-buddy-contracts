@@ -1,3 +1,9 @@
+## [7.0.1](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v7.0.0...v7.0.1) (2026-11-23)
+
+### Bug Fixes
+
+* publish valid Maven dependency metadata ([#167](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/167)) ([bf73507](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/bf7350760bca01105bda6836c9e7b54b13e769bf))
+
 ## [7.0.0](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v6.1.4...v7.0.0) (2026-11-22)
 
 ### ⚠ BREAKING CHANGES
