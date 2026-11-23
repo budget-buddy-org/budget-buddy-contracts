@@ -22,6 +22,8 @@ java {
 }
 
 val generateJavaContracts = tasks.register<Exec>("generateJavaContracts") {
+  group = "build"
+  description = "Generate Java contracts from the OpenAPI specification."
   inputs.dir("specs")
   inputs.files("config/spring-server.yaml", "openapitools.json", "package.json", "pnpm-lock.yaml")
   outputs.dir("generated/java/src/main/java")

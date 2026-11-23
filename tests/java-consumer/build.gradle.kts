@@ -22,5 +22,6 @@ repositories {
 }
 
 dependencies {
-  implementation("com.budgetbuddy:budget-buddy-contracts:0.0.0-SNAPSHOT")
+  val artifactVersion = providers.gradleProperty("artifactVersion").get()
+  implementation("com.budgetbuddy:budget-buddy-contracts:$artifactVersion")
 }
