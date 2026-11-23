@@ -13,7 +13,7 @@ permissions:
   packages: read
 jobs:
   validate:
-    uses: budget-buddy-org/budget-buddy-workflows/.github/workflows/contracts-validation.yml@6ca650db05a934bd612faac664149938e763cfed
+    uses: ./.github/workflows/validate.yml
   release:
     needs: validate
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry-run)

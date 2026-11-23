@@ -61,9 +61,6 @@ jobs:
       - uses: budget-buddy-org/budget-buddy-workflows/.github/actions/setup-node@6ca650db05a934bd612faac664149938e763cfed
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a
 
-      - name: Generate Java client
-        run: pnpm run generate:java
-
       - name: Extract version from package.json
         id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT

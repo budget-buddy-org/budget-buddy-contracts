@@ -9,10 +9,10 @@
     "lint": "spectral lint specs/openapi.yaml --ruleset .spectral.yaml",
     "mock": "prism mock specs/openapi.yaml -p 4010",
     "generate:ts": "openapi-ts",
-    "generate:java": "openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml",
-    "generate:swift": "openapi-generator-cli generate -i specs/openapi.yaml -g swift6 -o /tmp/budget-buddy-swift -c config/swift6.yaml && rsync -a --delete /tmp/budget-buddy-swift/Sources/BudgetBuddyContracts/ Sources/BudgetBuddyContracts/ && node scripts/normalize-swift-patterns.mjs",
+    "generate:java": "rm -rf generated/java/src/main/java && openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml",
+    "generate:swift": "sh scripts/generate-swift.sh",
     "generate": "pnpm run generate:ts && pnpm run generate:java && pnpm run generate:swift",
-    "release:verify": "pnpm run lint && pnpm run validate"
+    "verify": "pnpm run lint && pnpm run validate && pnpm run generate:ts && tsc --noEmit --emitDeclarationOnly false && sh scripts/verify-java-publication.sh"
   },
   "engines": {
     "node": ">=24.18.0",

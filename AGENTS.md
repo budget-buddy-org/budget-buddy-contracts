@@ -20,14 +20,15 @@ API-first contracts for Budget Buddy. `specs/openapi.yaml` (OpenAPI 3.1.0, singl
 
 ```bash
 pnpm install            # tooling (openapi-generator-cli, spectral)
-pnpm run lint           # Spectral lint — must pass before PRs
+pnpm run verify         # PR and release checks: spec, TypeScript, Java publication
+pnpm run lint           # Spectral lint
 pnpm run validate       # structural validation
 pnpm run mock           # Prism mock server at http://localhost:4010
 pnpm run generate:ts    # → generated/typescript/
 pnpm run generate:java  # → generated/java/
 pnpm run generate:swift # → Sources/BudgetBuddyContracts/ (commit this)
 pnpm run generate       # all three
-./gradlew build         # compile the generated Java artifact (run after generate:java)
+./gradlew build         # generate and compile the Java artifact
 ```
 
 ## Versioning & release
@@ -37,7 +38,7 @@ Single unified version across all three artifacts. The git tag is the source of 
 Releases are fully automated via **semantic-release** on push to `main` — never bump versions, tag, or run `generate:swift` manually:
 
 1. Edit `specs/openapi.yaml` (and/or `config/*.yaml`)
-2. `pnpm run lint && pnpm run validate`
+2. `pnpm run verify`
 3. Open a PR with a conventional-commit title. **PRs are squash-merged, so the PR title is what lands on `main` and what semantic-release reads** for the next version. Shared CI validates PR titles; individual commits are free form. Use `!` in the title for breaking changes.
 4. CI determines the version, bumps the files, regenerates + commits Swift sources, tags, and creates the GitHub Release — which triggers the Publish workflow (TS→npm, Java→Maven via Gradle in parallel).
 
