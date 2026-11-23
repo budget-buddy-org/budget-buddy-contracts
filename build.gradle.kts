@@ -28,16 +28,15 @@ sourceSets {
 }
 
 dependencies {
-  val springVersion = "7.0.11"
-  api("org.springframework:spring-context:$springVersion")
-  api("org.springframework:spring-core:$springVersion")
-  api("org.springframework:spring-web:$springVersion")
-  api("jakarta.validation:jakarta.validation-api:3.1.1")
-  api("org.jspecify:jspecify:1.0.1")
-  api("com.fasterxml.jackson.core:jackson-annotations:2.21")
+  api(libs.spring.context)
+  api(libs.spring.core)
+  api(libs.spring.web)
+  api(libs.jakarta.validation)
+  api(libs.jspecify)
+  api(libs.jackson.annotations)
 
-  compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
-  compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
+  compileOnly(libs.jakarta.annotation)
+  compileOnly(libs.jakarta.servlet)
 }
 
 publishing {
