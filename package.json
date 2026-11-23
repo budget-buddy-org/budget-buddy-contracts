@@ -12,7 +12,7 @@
     "generate:java": "rm -rf generated/java/src/main/java && openapi-generator-cli generate -i specs/openapi.yaml -g spring -o generated/java -c config/spring-server.yaml",
     "generate:swift": "sh scripts/generate-swift.sh",
     "generate": "pnpm run generate:ts && pnpm run generate:java && pnpm run generate:swift",
-    "release:verify": "pnpm run lint && pnpm run validate"
+    "verify": "pnpm run lint && pnpm run validate && pnpm run generate:ts && tsc --noEmit --emitDeclarationOnly false && sh scripts/verify-java-publication.sh"
   },
   "engines": {
     "node": ">=24.18.0",

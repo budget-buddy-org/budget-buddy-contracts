@@ -46,6 +46,7 @@ pnpm install   # installs Spectral and openapi-generator-cli as devDeps
 
 | Command | Description |
 | :--- | :--- |
+| `pnpm run verify` | Runs the PR and release checks locally (requires Java 25): spec lint and validation, TypeScript generation and typechecking, and a Java publication consumer build. |
 | `pnpm run lint` | Lints the spec with Spectral (operationId, tags, descriptions, 500 responses). |
 | `pnpm run validate` | Checks the structural integrity of the OpenAPI document. |
 | `pnpm run mock` | Runs a Prism mock server locally at `http://localhost:4010`. |
@@ -100,7 +101,7 @@ chooses its Spring Boot starters and provides the servlet runtime.
 ## 🚦 Release Workflow
 
 1. **Edit the spec:** `specs/openapi.yaml` (and/or `config/*.yaml`).
-2. **Lint and validate:** `pnpm run lint && pnpm run validate`.
+2. **Verify:** `pnpm run verify`.
 3. **Open a PR with a conventional-commit title** (`feat:`, `fix:`, `feat!:`, …). PRs are squash-merged, so the PR title becomes the commit on `main` and drives semantic-release.
 4. **CI does the rest** — on push to `main`, the release pipeline:
    - calculates the next semver from commit history
