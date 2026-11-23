@@ -1,3 +1,9 @@
+## [7.0.3](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v7.0.2...v7.0.3) (2026-11-23)
+
+### Bug Fixes
+
+* generate and verify contracts before publication ([#169](https://github.com/budget-buddy-org/budget-buddy-contracts/issues/169)) ([857f784](https://github.com/budget-buddy-org/budget-buddy-contracts/commit/857f784e964ccfbefa61962ce1843b00c3a59db4))
+
 ## [7.0.2](https://github.com/budget-buddy-org/budget-buddy-contracts/compare/v7.0.1...v7.0.2) (2026-11-23)
 
 ### Bug Fixes
