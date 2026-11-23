@@ -1,0 +1,12 @@
+[versions]
+spring = "7.0.11"
+
+[libraries]
+spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
+spring-core = { module = "org.springframework:spring-core", version.ref = "spring" }
+spring-web = { module = "org.springframework:spring-web", version.ref = "spring" }
+jakarta-validation = { module = "jakarta.validation:jakarta.validation-api", version = "3.1.1" }
+jspecify = { module = "org.jspecify:jspecify", version = "1.0.1" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version = "2.21" }
+jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version = "3.0.0" }
+jakarta-servlet = { module = "jakarta.servlet:jakarta.servlet-api", version = "6.1.0" }

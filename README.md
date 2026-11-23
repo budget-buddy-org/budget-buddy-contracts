@@ -73,6 +73,12 @@ pnpm add @budget-buddy-org/budget-buddy-contracts
 ```
 
 ### Java (Spring Boot)
+With the GitHub Packages Maven repository configured, add the contracts to your Gradle build:
+
+```kotlin
+implementation("com.budgetbuddy:budget-buddy-contracts:<version>")
+```
+
 Add to your `pom.xml` (requires Maven server credentials for GitHub Packages):
 ```xml
 <dependency>
@@ -82,13 +88,10 @@ Add to your `pom.xml` (requires Maven server credentials for GitHub Packages):
 </dependency>
 ```
 
-The Java artifact requires Java 25 and is intended for Spring Boot 4 applications.
-Its Maven POM declares Spring, Jakarta Annotation and Servlet, Jakarta
-Validation, JSpecify, and Jackson annotations without versions, so the
-consuming application's BOM manages them.
-Jackson 3 retains the `com.fasterxml.jackson.annotation` API package; generated
-sources use that annotation API and Jackson 3 databind at runtime. The published
-artifact is built and published with Gradle.
+The Java 25 JAR contains the generated Spring MVC interfaces, models, and supporting classes.
+Gradle and Maven consumers receive the Spring Framework modules, Jakarta Validation API,
+JSpecify, and Jackson annotations used by the public contracts. The consuming application
+chooses its Spring Boot starters and provides the servlet runtime.
 
 ---
 
